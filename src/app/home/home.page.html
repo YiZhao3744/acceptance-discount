@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      承兑贴现计算器
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-segment [(ngModel)]="segment">
+    <ion-segment-button 
+    (touchstart)="segmentChanged(item)"
+    value="{{item.value}}" *ngFor="let item of list">
+      <span>{{item.text}}</span>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-input padding clearInput="true"
+      placeholder="请输入票号（选填）" type="number"></ion-input>
+  <ion-list>
+       <ion-item *ngFor="let item of formlist">
+         <ion-label color="primary">{{item.label}}</ion-label>
+         <ion-input padding-left clearInput="true" type="number" 
+         (blur)="calculate(item)"
+          placeholder="{{item.holder}}" [(ngModel)]="item.value"></ion-input>
+         <span>{{item.unit}}</span>
+       </ion-item>
+       <ion-item>
+         <ion-label color="primary">贴现日</ion-label>
+         <ion-datetime displayFormat="YYYY-MM-DD" 
+         min="2019-01-01" max="2020-12-31" cancelText="取消"
+           doneText="确定" [(ngModel)]="dateStart" (ngModelChange)="onPick()"></ion-datetime>
+         <span [class.red]="isStartRed" class="week">{{startDay}}</span>
+       </ion-item>
+       <ion-item>
+         <ion-label color="primary">到期日</ion-label>
+         <ion-datetime displayFormat="YYYY-MM-DD" cancelText="取消" doneText="确定" 
+         min="2019-01-01" max="2020-12-31"
+           (ngModelChange)="onPick()" [(ngModel)]="dateEnd"></ion-datetime>
+         <span [class.red]="isEndRed" class="week">{{endDay}}</span>
+       </ion-item>
+     </ion-list>
+     <div class="cards">
+       <ion-item>
+         <ion-label>调整天数</ion-label>
+         <div class="right">
+           <ion-icon ios="ios-remove-circle-outline"
+           md="md-remove-circle-outline"
+            (touchstart)="onIncres()"></ion-icon>
+           <span [class.red]="addDay">{{addDay}}</span>
+           <ion-icon md="md-add-circle-outline"
+           ios="ios-remove-circle-outline"
+            (touchstart)="onAdd()"></ion-icon>
+         </div>
+       </ion-item>
+       <div class="mgrid">
+         <div class="mrow" *ngFor="let items of cards">
+           <div class="mcol" *ngFor="let item of items">
+             <h5>{{item.title}}
+              <ion-icon md="md-add-circle-outline" class="add"
+              ios="ios-add-circle-outline"
+               (touchstart)="onSkip(item)" *ngIf="item.canAdd"></ion-icon>
+             </h5>
+             <div class="cont">
+               <span>{{item.value}}</span>
+               <span>{{item.unit}}</span>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+ 
+</ion-content>

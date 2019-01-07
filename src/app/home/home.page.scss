@@ -1,0 +1,152 @@
+  ion-header {
+    ion-title {
+      background: orange;
+      color: white;
+    }
+  }
+
+  ion-content {
+    background: #eee !important;
+
+    ion-segment {
+      ion-segment-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 2.5rem;
+        background: none;
+        border: none;
+        color: gray;
+      }
+
+      .segment-button-checked {
+        color: orange;
+        position: relative;
+      }
+
+      .segment-button-checked:after {
+        content: '';
+        width: 30%;
+        background: orange;
+        height: 1px;
+        display: block;
+        position: absolute;
+        bottom: 0;
+      }
+    }
+
+    ion-input {
+      margin-top: 1em;
+    }
+
+    ion-list {
+      margin-bottom: 0;
+
+      ion-item {
+        padding-right: 10px;
+        position: relative;
+
+        ion-label {
+          margin-bottom: 0;
+          color: gray;
+          margin-top: 12px;
+        }
+
+        ion-datetime {
+          padding-bottom: 0;
+          position: absolute;
+          left: 4em;
+        }
+
+        span {
+          color: gray;
+        }
+
+        .week {
+          position: absolute;
+          left: 11em;
+          margin-top: 5px;
+        }
+
+        .red {
+          color: red;
+        }
+      }
+    }
+
+    .cards {
+      ion-label {
+        color: gray;
+      }
+
+      .right {
+        justify-content: space-between;
+        min-width: 25%;
+        display: flex;
+        align-items: center;
+        padding-right: 16px;
+
+        .red {
+          color: red;
+        }
+
+        ion-icon {
+          font-size: 1.4rem;
+          color: gray;
+        }
+      }
+
+      .mgrid {
+        background: #eee;
+        padding-bottom: .5em;
+
+        .mrow {
+          display: flex;
+          justify-content: space-between;
+          padding: 0 16px;
+
+          .mcol {
+            min-width: 45%;
+            text-align: center;
+
+            h5 {
+              background: #bbb4b4;
+              padding: 5px;
+              color: white;
+              border-radius: 6px 6px 0 0;
+              margin: .5em 0 0 0;
+              position: relative;
+              ion-icon {
+                font-size: 1.4rem;
+                color: white;
+                position: absolute;
+                right: .2em;
+                top: 50%;
+                transform: translateY(-50%);
+              }
+            }
+
+            .cont {
+              min-height: 3rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 0 0 6px 6px;
+              background: white;
+
+              span {
+                &:first-of-type {
+                  margin: 0 8px;
+                  font-weight: 600;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  :host {
+    --highlight-color-focused: var(--ion-color-primary, #3880ff);
+  }
