@@ -1,1 +1,1 @@
-# acceptance-discount-
+# acceptance-discount
