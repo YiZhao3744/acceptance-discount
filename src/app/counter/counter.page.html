@@ -10,20 +10,22 @@
 
 <ion-content>
   <div class="layout">
-    <div class="text-box">
-      <p>{{preValue}}</p>
-      <p>{{operation}}</p>
-      <p>{{currentValue}}</p>
-      <p>{{result}}</p>
+    <div class="text-box" >
+      <p [style.height]="height">{{preValue}}</p>
+      <p [style.height]="height">{{operation}}</p>
+      <p [style.height]="height">{{currentValue}}</p>
+      <p [style.height]="height">{{result}}</p>
     </div>
     <div class="calculator">
+     <div class="mgrid">
       <div class="row" *ngFor="let data of list">
-        <button *ngFor="let item of data.items" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">{{item}}</button>
-        <button *ngFor="let item of data.opts" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">{{item}}</button>
-        <button *ngIf="data.isBack" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">
+        <button  [style.height]="btnHeight" *ngFor="let item of data.items" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">{{item}}</button>
+        <button  [style.height]="btnHeight" *ngFor="let item of data.opts" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">{{item}}</button>
+        <button  [style.height]="btnHeight" *ngIf="data.isBack" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">
             <ion-icon ios="ios-backspace" md="ios-backspace"></ion-icon>
         </button>
       </div>
+     </div>
     </div>
   </div>
 </ion-content>

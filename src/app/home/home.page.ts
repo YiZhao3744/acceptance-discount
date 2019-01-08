@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { ToastController, NavController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -45,11 +46,14 @@ export class HomePage implements OnInit {
 
   cards2 = [
     [{ title: '计息天数', canAdd: false, value: '--', unit: '天' },
-    { title: '折合年利率', canAdd: true, value: '--', unit: '%' }],
-    [{ title: '折合月利率', canAdd: true, value: '--', unit: '‰' }]
+    { title: '折合年利率', canAdd: false, value: '--', unit: '%' }],
+    [{ title: '折合月利率', canAdd: false, value: '--', unit: '‰' }]
   ];
 
-  constructor(private toast: ToastController, private navCtrl: NavController) {
+  constructor(
+    private toast: ToastController,
+    private router: Router, 
+   ) {
   }
 
   ngOnInit() {
@@ -168,10 +172,6 @@ export class HomePage implements OnInit {
   }
 
   onSkip(item) {
-    this.navCtrl.navigateForward('/counter', {
-      queryParams: {
-        value: item.value
-      }
-    });
+    this.router.navigate(['/counter'], { queryParams: { vaue: item.value } });
   }
 }

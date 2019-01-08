@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { isNgTemplate } from '@angular/compiler';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-counter',
@@ -17,10 +17,15 @@ export class CounterPage implements OnInit {
   result: number;
   operation = '';
   isCounted = false;
+  height = '';
+  btnHeight = '';
 
-  constructor(private navCtrl: NavController) { }
+  constructor(private navCtrl: NavController,private router: ActivatedRoute) { }
 
   ngOnInit() {
+    console.log(this.router.snapshot.queryParams['value']);
+    this.height = window.innerHeight * .5 / 4 - 22 +'px';
+    this.btnHeight = window.innerHeight * .5 / 5 - 14 +'px';
     this.createList();
   }
 
@@ -52,9 +57,9 @@ export class CounterPage implements OnInit {
     }
     const isOpts = this.isOperation(item, data);
     if (this.isCounted) {
-      this.reset(isOpts);
+      this.reset(isOpts, item);
     }
-    if (item === '＝') {
+    if (item === '＝' && this.operation) {
       this.doCount();
       return;
     }
@@ -89,12 +94,20 @@ export class CounterPage implements OnInit {
   }
 
   canAdd(val: string, item: string): boolean {
-    return (val.length || item !== '.') && val[0] !== '.' && val.indexOf('.') < 0;
+    if(!val.length && item === '.') return false;
+    const copy = val + item;
+    let arr = [];
+    for (let i = 0; i < copy.length; i++) {
+      if(copy[i] === '.') {
+        arr.push(copy[i]);
+      }
+    }
+    return arr.length <= 1 ;
   }
 
-  reset(isOpts: boolean) {
+  reset(isOpts: boolean, item:string) {
     if (isOpts) {
-      this.preValue = this.result.toString();
+      this.preValue = this.result ? this.result.toString() : this.preValue;
       this.result = null;
       this.operation = '';
       this.currentValue = '';
@@ -127,7 +140,7 @@ export class CounterPage implements OnInit {
     this.isCounted = true;
   }
 
-  onEnd(e) {
+  onEnd(e: any) {
     e.target.className = this.className;
   }
 
