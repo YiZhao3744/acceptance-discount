@@ -1,9 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>counter</ion-title>
+    <button outline class="back" (touchstart)="goBack()">
+      <ion-icon ios="ios-arrow-back" md="ios-arrow-back"></ion-icon>
+      返回
+    </button>
+    <ion-title>再计算</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-
+<ion-content>
+  <div class="layout">
+    <div class="text-box">
+      <p>{{preValue}}</p>
+      <p>{{operation}}</p>
+      <p>{{currentValue}}</p>
+      <p>{{result}}</p>
+    </div>
+    <div class="calculator">
+      <div class="row" *ngFor="let data of list">
+        <button *ngFor="let item of data.items" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">{{item}}</button>
+        <button *ngFor="let item of data.opts" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">{{item}}</button>
+        <button *ngIf="data.isBack" (touchstart)="onStart(item,$event,data)" (touchend)="onEnd($event)">
+            <ion-icon ios="ios-backspace" md="ios-backspace"></ion-icon>
+        </button>
+      </div>
+    </div>
+  </div>
 </ion-content>

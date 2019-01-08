@@ -1,14 +1,9 @@
-  ion-header {
-    ion-title {
-      background: orange;
-      color: white;
-    }
-  }
-
-  ion-content {
-    background: #eee !important;
+ion-content {
+  .layout {
+    background: #eee;
 
     ion-segment {
+      background: white;
       ion-segment-button {
         display: flex;
         align-items: center;
@@ -35,8 +30,9 @@
       }
     }
 
-    ion-input {
-      margin-top: 1em;
+    .finput {
+      margin: 1em 0;
+      background: white;
     }
 
     ion-list {
@@ -116,6 +112,7 @@
               border-radius: 6px 6px 0 0;
               margin: .5em 0 0 0;
               position: relative;
+
               ion-icon {
                 font-size: 1.4rem;
                 color: white;
@@ -146,7 +143,9 @@
       }
     }
   }
+}
 
-  :host {
-    --highlight-color-focused: var(--ion-color-primary, #3880ff);
-  }
+:host {
+  --highlight-color-focused: var(--ion-color-primary, #3880ff);
+  background: #eee;
+}
