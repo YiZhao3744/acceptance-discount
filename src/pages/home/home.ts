@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef,Renderer, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { ToastController, NavController } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
@@ -49,9 +49,12 @@ export class HomePage implements OnInit {
     [{ title: '折合月利率', canAdd: false, value: '--', unit: '‰' }]
   ];
 
+  @ViewChild('btn')btn: ElementRef;
+
   constructor(
     private toast: ToastController,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private render: Renderer
   ) {
   }
 
@@ -63,6 +66,12 @@ export class HomePage implements OnInit {
     this.dateEnd = moment(new Date(now + oneyear)).format('YYYY-MM-DD');
     this.getWeek();
     this.setDays();
+    const timer= setInterval(() => {
+      if(this.btn) {
+        this.render.setElementClass(this.btn.nativeElement,'segment-activated',true);
+        clearInterval(timer);
+      }
+    },10);
   }
 
   setDays() {

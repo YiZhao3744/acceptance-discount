@@ -20,27 +20,33 @@ ion-header {
         color: white;
         position: relative;
     }       
-    .toolbar-background {
-        
-  
-      .back {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 16px;
-        z-index: 1;
-        font-size: 1rem;
-        background: transparent;
-        display: flex;
-        align-items: center;
-        color: white;
-        outline: none;
-  
-        ion-icon {
-          color: white;
-        }
-      }
+  }
+
+  .btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+   
+    z-index: 99;
+    font-size: 1.8rem;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    color: white;
+    outline: none;
+
+    ion-icon {
+      color: white;
+      margin-right: .3em;
     }
+  }
+
+  .back {
+    left: 16px;
+  }
+
+  .share {
+    right: 16px;
   }
 
   .toolbar-background {
@@ -57,6 +63,10 @@ ion-header {
 
   .label-ios + ion-input .text-input, .label-ios + ion-textarea .text-input, .label-ios + .input + .cloned-input {
       margin-left: 0;
+  }
+
+  .segment-ios .segment-button {
+    color: gray;
   }
   
   

@@ -9,7 +9,8 @@
 <ion-content>
   <div class="layout">
     <ion-segment [(ngModel)]="segment">
-      <ion-segment-button (touchstart)="segmentChanged(item)" value="{{item.value}}" *ngFor="let item of list">
+      <ion-segment-button (touchstart)="segmentChanged(item)" #btn
+      value="{{item.value}}" *ngFor="let item of list">
         <span>{{item.text}}</span>
       </ion-segment-button>
     </ion-segment>
@@ -17,7 +18,7 @@
     <ion-list>
       <ion-item *ngFor="let item of formlist">
         <ion-label color="primary">{{item.label}}</ion-label>
-        <ion-input padding-left clearInput="true" type="number" (blur)="calculate(item)" placeholder="{{item.holder}}"
+        <ion-input padding-left clearInput="true" type="number" (ionBlur)="calculate(item)" placeholder="{{item.holder}}"
           [(ngModel)]="item.value"></ion-input>
         <span item-end>{{item.unit}}</span>
       </ion-item>
@@ -25,22 +26,22 @@
         <ion-label color="primary">贴现日</ion-label>
         <ion-datetime displayFormat="YYYY-MM-DD" min="2019-01-01" max="2020-12-31" cancelText="取消" doneText="确定"
           [(ngModel)]="dateStart" (ngModelChange)="onPick()"></ion-datetime>
-        <span [class.red]="isStartRed" class="week">{{startDay}}</span>
+        <span [class.red]="isStartRed" item-end>{{startDay}}</span>
       </ion-item>
       <ion-item>
         <ion-label color="primary">到期日</ion-label>
         <ion-datetime displayFormat="YYYY-MM-DD" cancelText="取消" doneText="确定" min="2019-01-01" max="2020-12-31"
           (ngModelChange)="onPick()" [(ngModel)]="dateEnd"></ion-datetime>
-        <span [class.red]="isEndRed" class="week">{{endDay}}</span>
+        <span [class.red]="isEndRed" item-end>{{endDay}}</span>
       </ion-item>
     </ion-list>
     <div class="cards">
       <ion-item>
         <ion-label>调整天数</ion-label>
-        <div class="right">
+        <div class="right" item-end>
           <ion-icon ios="ios-remove-circle-outline" md="md-remove-circle-outline" (touchstart)="onIncres()"></ion-icon>
           <span [class.red]="addDay">{{addDay}}</span>
-          <ion-icon md="md-add-circle-outline" ios="ios-remove-circle-outline" (touchstart)="onAdd()"></ion-icon>
+          <ion-icon md="md-add-circle-outline" ios="ios-add-circle-outline" (touchstart)="onAdd()"></ion-icon>
         </div>
       </ion-item>
       <div class="mgrid">
