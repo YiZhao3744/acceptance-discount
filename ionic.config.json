@@ -1,7 +1,5 @@
 {
-  "name": "calculator",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
+  "name": "acceptance-discount",
+  "integrations": {},
+  "type": "ionic-angular"
 }

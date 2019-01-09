@@ -1,26 +1,41 @@
-import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import { ErrorHandler, NgModule } from '@angular/core';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { MyApp } from './app.component';
+import { HomePage } from '../pages/home/home';
+import { ShareComponent } from '../pages/share/share.component';
+import { CounterPage } from '../pages/counter/counter';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot({
-    mode: 'ios',
-    backButtonText: '返回'
-  }), AppRoutingModule],
+  declarations: [
+    MyApp,
+    HomePage,
+    ShareComponent,
+    CounterPage
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    IonicModule.forRoot(MyApp, {
+      mode: 'ios',
+      iconMode: 'ios',
+    })
+  ],
+  bootstrap: [IonicApp],
+  entryComponents: [
+    MyApp,
+    HomePage,
+    ShareComponent,
+    CounterPage
+  ],
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
-  ],
-  bootstrap: [AppComponent]
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
+  ]
 })
 export class AppModule { }

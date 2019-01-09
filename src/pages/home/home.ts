@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { ToastController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { ToastController, NavController } from 'ionic-angular';
+import { CounterPage } from '../counter/counter';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'page-home',
+  templateUrl: 'home.html',
 })
 export class HomePage implements OnInit {
 
@@ -52,8 +51,8 @@ export class HomePage implements OnInit {
 
   constructor(
     private toast: ToastController,
-    private router: Router, 
-   ) {
+    private navCtrl: NavController
+  ) {
   }
 
   ngOnInit() {
@@ -88,15 +87,13 @@ export class HomePage implements OnInit {
 
   onPick() {
     if (new Date(this.dateStart).getTime() > new Date(this.dateEnd).getTime()) {
-      this.toast.create({
+      const t = this.toast.create({
         message: '贴现日期不能大于到期日期',
         duration: 3000,
-        mode: 'ios',
         cssClass: 'cus-toast',
         position: 'middle',
-      }).then(t => {
-        t.present();
       });
+      t.present();
       return;
     }
     setTimeout(() => {
@@ -118,9 +115,15 @@ export class HomePage implements OnInit {
 
   // 按利率计算
   calculate(item?: any) {
-    if (this.segment === 2) {
+    // tslint:disable-next-line:triple-equals
+    if (this.segment == 2) {
       // 折合年利率 = 十万扣费*360 / 计息天数 /100000*100
-      if (this.formlist2[0].value === '' || this.formlist2[0].value == null) { return; }
+      // tslint:disable-next-line:triple-equals
+      if (this.formlist2[0].value == '' || this.formlist2[0].value == null) {
+        this.cards[0][1].value = '--';
+        this.cards[1][0].value = '--';
+        return;
+      }
       const a = this.formlist2[0].value * 360 / this.cards[0][0].value;
       const b = a / 100000 * 100;
       this.cards[0][1].value = b.toFixed(8);
@@ -132,8 +135,16 @@ export class HomePage implements OnInit {
       if (item && item.isYear && item.value) {
         this.formlist1[2].value = (item.value / 12).toFixed(8);
       }
-      if (this.formlist1[0].value === '' || this.formlist1[0].value == null) { return; }
-      if (this.formlist1[1].value === '' || this.formlist1[1].value == null) { return; }
+      // tslint:disable-next-line:triple-equals
+      if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
+        this.clearCard();
+        return;
+      }
+      // tslint:disable-next-line:triple-equals
+      if (this.formlist1[1].value == '' || this.formlist1[1].value == null) {
+        this.clearCard();
+        return;
+      }
 
       // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
       const c = this.formlist1[1].value;
@@ -154,9 +165,16 @@ export class HomePage implements OnInit {
 
   }
 
+  clearCard() {
+    this.cards[1][0].value = '--';
+    this.cards[1][1].value = '--';
+    this.cards[0][1].value = '--';
+  }
+
   // 按每十万扣费计算
   segmentChanged(item) {
-    if (this.segment === item.value) { return; }
+    // tslint:disable-next-line:triple-equals
+    if (this.segment == item.value) { return; }
     switch (item.value) {
       case 2:
         this.cards2[0][0].value = this.cards1[0][0].value;
@@ -172,6 +190,8 @@ export class HomePage implements OnInit {
   }
 
   onSkip(item) {
-    this.router.navigate(['/counter'], { queryParams: { vaue: item.value } });
+    this.navCtrl.push(CounterPage, {
+      value: item.value
+    });
   }
 }
