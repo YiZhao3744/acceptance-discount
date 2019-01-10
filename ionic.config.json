@@ -1,5 +1,7 @@
 {
   "name": "acceptance-discount",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic-angular"
 }

@@ -66,12 +66,12 @@ export class HomePage implements OnInit {
     this.dateEnd = moment(new Date(now + oneyear)).format('YYYY-MM-DD');
     this.getWeek();
     this.setDays();
-    const timer= setInterval(() => {
-      if(this.btn) {
-        this.render.setElementClass(this.btn.nativeElement,'segment-activated',true);
-        clearInterval(timer);
-      }
-    },10);
+    // const timer= setInterval(() => {
+    //   if(this.btn) {
+    //     this.render.setElementClass(this.btn.nativeElement,'segment-activated',true);
+    //     clearInterval(timer);
+    //   }
+    // },10);
   }
 
   setDays() {

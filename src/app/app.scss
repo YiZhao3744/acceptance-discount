@@ -15,72 +15,93 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 ion-header {
-    ion-toolbar {
-        background: orange;
-        color: white;
-        position: relative;
-    }       
+  ion-toolbar {
+    background: orange;
+    color: white;
+    position: relative;
   }
+}
 
-  .btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-   
-    z-index: 99;
-    font-size: 1.8rem;
-    background: transparent;
+.btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  z-index: 99;
+  font-size: 1.8rem;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  color: white;
+  outline: none;
+
+  ion-icon {
+    color: white;
+    margin-right: .3em;
+  }
+}
+
+.back {
+  left: 16px;
+}
+
+.share {
+  right: 16px;
+}
+
+.toolbar-background {
+  background: transparent !important;
+  border-bottom: none!important;
+}
+
+.toolbar-title {
+  color: white;
+}
+
+ion-app.ios [padding] {
+  padding: 0;
+}
+
+.label-ios+ion-input .text-input,
+.label-ios+ion-textarea .text-input,
+.label-ios+.input+.cloned-input {
+  margin-left: 0;
+}
+
+.segment-ios .segment-button {
+  color: gray;
+}
+
+
+:host {
+  --highlight-color-focused: var(--ion-color-primary, #3880ff);
+  background: #eee;
+}
+
+.cus-toast .toast-wrapper, .cus-toast .loading-wrapper {
+  border: 1px solid orange;
+  color: orange;
+  text-align: center;
+  background: white;
+  width: 60%;
+  .toast-container {
+    border: 1px solid !important;
+    .toast-message {
+      color: orange;
+    }
+  }
+}
+
+.share-action {
+  .action-sheet-button {
     display: flex;
+    justify-content: center;
     align-items: center;
-    color: white;
-    outline: none;
-
-    ion-icon {
-      color: white;
-      margin-right: .3em;
-    }
   }
-
-  .back {
-    left: 16px;
+ 
+  .icon-wechat:before, .icon-wechat_timeline:before {
+    color: green;
+    position: relative;
+    left: 27%;
   }
-
-  .share {
-    right: 16px;
-  }
-
-  .toolbar-background {
-       background: transparent !important;
-  }
-
-  .toolbar-title {
-    color: white;
-  }
-
-  ion-app.ios [padding] {
-      padding: 0;
-  }
-
-  .label-ios + ion-input .text-input, .label-ios + ion-textarea .text-input, .label-ios + .input + .cloned-input {
-      margin-left: 0;
-  }
-
-  .segment-ios .segment-button {
-    color: gray;
-  }
-  
-  
-  :host {
-    --highlight-color-focused: var(--ion-color-primary, #3880ff);
-    background: #eee;
-  }
-  
-  .cus-toast {
-    border: 1px solid orange;
-    color: orange;
-    text-align: center;
-  
-    .toast-container {
-      border: 1px solid !important;
-    }
-  }
+}
