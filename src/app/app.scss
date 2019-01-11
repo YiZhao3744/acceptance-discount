@@ -1,6 +1,4 @@
 // http://ionicframework.com/docs/theming/
-
-
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -26,7 +24,6 @@ ion-header {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-
   z-index: 99;
   font-size: 1.8rem;
   background: transparent;
@@ -51,7 +48,7 @@ ion-header {
 
 .toolbar-background {
   background: transparent !important;
-  border-bottom: none!important;
+  border-bottom: none !important;
 }
 
 .toolbar-title {
@@ -72,20 +69,22 @@ ion-app.ios [padding] {
   color: gray;
 }
 
-
 :host {
   --highlight-color-focused: var(--ion-color-primary, #3880ff);
   background: #eee;
 }
 
-.cus-toast .toast-wrapper, .cus-toast .loading-wrapper {
+.cus-toast .toast-wrapper,
+.cus-toast .loading-wrapper {
   border: 1px solid orange;
   color: orange;
   text-align: center;
   background: white;
   width: 60%;
+
   .toast-container {
     border: 1px solid !important;
+
     .toast-message {
       color: orange;
     }
@@ -98,8 +97,9 @@ ion-app.ios [padding] {
     justify-content: center;
     align-items: center;
   }
- 
-  .icon-wechat:before, .icon-wechat_timeline:before {
+
+  .icon-wechat:before,
+  .icon-wechat_timeline:before {
     color: green;
     position: relative;
     left: 27%;
