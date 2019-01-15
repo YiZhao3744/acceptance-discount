@@ -16,14 +16,10 @@ ion-header {
   ion-toolbar {
     background: orange;
     color: white;
-    position: relative;
   }
 }
 
 .btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   z-index: 99;
   font-size: 1.8rem;
   background: transparent;
@@ -39,11 +35,11 @@ ion-header {
 }
 
 .back {
-  left: 16px;
+  float: left;
 }
 
 .share {
-  right: 16px;
+  float: right;
 }
 
 .toolbar-background {
@@ -102,6 +98,6 @@ ion-app.ios [padding] {
   .icon-wechat_timeline:before {
     color: green;
     position: relative;
-    left: 27%;
+    left: 25%;
   }
 }

@@ -9,11 +9,11 @@
 <ion-content>
   <div class="layout">
     <ion-segment [(ngModel)]="segment">
-      <ion-segment-button (touchstart)="segmentChanged(item)" #btn
-      value="{{item.value}}" *ngFor="let item of list">
-        <span>{{item.text}}</span>
+      <ion-segment-button value="{{item.value}}" tappable (click)="segmentChanged(item)" *ngFor="let item of list">
+        {{item.text}}
       </ion-segment-button>
     </ion-segment>
+
     <ion-input padding clearInput="true" class="finput" placeholder="请输入票号（选填）" type="number"></ion-input>
     <ion-list>
       <ion-item *ngFor="let item of formlist">
@@ -39,16 +39,17 @@
       <ion-item>
         <ion-label>调整天数</ion-label>
         <div class="right" item-end>
-          <ion-icon ios="ios-remove-circle-outline" md="md-remove-circle-outline" (touchstart)="onIncres()"></ion-icon>
+          <ion-icon ios="ios-remove-circle-outline" md="md-remove-circle-outline" tappable (click)="onIncres()"></ion-icon>
           <span [class.red]="addDay">{{addDay}}</span>
-          <ion-icon md="md-add-circle-outline" ios="ios-add-circle-outline" (touchstart)="onAdd()"></ion-icon>
+          <ion-icon md="md-add-circle-outline" ios="ios-add-circle-outline" tappable (click)="onAdd()"></ion-icon>
         </div>
       </ion-item>
       <div class="mgrid">
         <div class="mrow" *ngFor="let items of cards">
           <div class="mcol" *ngFor="let item of items">
             <h5>{{item.title}}
-              <ion-icon md="md-add-circle-outline" class="add" ios="ios-add-circle-outline" (touchstart)="onSkip(item)" *ngIf="item.canAdd"></ion-icon>
+              <ion-icon md="md-add-circle-outline" class="add" ios="ios-add-circle-outline" tappable (click)="onSkip(item)"
+                *ngIf="item.canAdd"></ion-icon>
             </h5>
             <div class="cont">
               <span>{{item.value}}</span>

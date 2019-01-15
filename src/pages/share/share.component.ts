@@ -3,26 +3,22 @@ import { Screenshot } from '@ionic-native/screenshot';
 import { Observable } from 'rxjs';
 import { LoadingController, ToastController, ActionSheetController } from 'ionic-angular';
 import { mergeMap, map } from 'rxjs/operators';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 @Component({
   selector: 'app-share',
   templateUrl: 'share.component.html',
 })
 export class ShareComponent implements OnInit {
-  
+
   url: string;
-  aa = `<img [src]='../../assets/imgs/wechat.png'/>分享到好友`;
-  wechat = `<p [innerHTML]=${this.aa}></p>`;
 
   constructor(
     private screenshot: Screenshot,
     private loadingCtrl: LoadingController,
     private toast: ToastController,
     private action: ActionSheetController,
-    private sanitizer: DomSanitizer
-    ) { 
+  ) {
 
-    }
+  }
 
 
   ngOnInit() {
@@ -33,66 +29,120 @@ export class ShareComponent implements OnInit {
       content: '保存截图中···',
       cssClass: 'cus-toast',
     });
-    // loading.present();
-    const toast = this.toast.create({
-      message:'截图已保存',
-      duration: 2000,
-      cssClass: 'cus-toast',
-      position: 'middle',
-    });
-    this.showActionSheet();
+    const now = new Date().getTime();
+    loading.present();
     Observable.fromPromise(this.screenshot.URI(50))
       .pipe(
         map((v: any) => {
           this.url = v.uri || v.URI;
-          alert(this.url.length);
         }),
         mergeMap(() => {
           return Observable.fromPromise(this.screenshot.save('jpg', 50));
         }))
       .subscribe(() => {
-        loading.dismiss();
-        toast.present();
-        toast.onDidDismiss(() => {
-         this.showActionSheet();
-        });
+        const then = new Date().getTime();
+        const diff = then - now;
+        if (diff <= 1500) {
+          setTimeout(() => {
+            loading.dismiss().then(() => {
+              this.showActionSheet();
+            });
+          }, diff);
+        } else {
+          loading.dismiss().then(() => {
+            this.showActionSheet();
+          });
+        }
       }, () => {
-        // const toast = this.toast.create({
-        //   message:'截图保存失败',
-        //   duration: 2000,
-        //   cssClass: 'cus-toast',
-        //   position: 'middle',
-        // });
-        // toast.present();
+        loading.dismiss().then(() => {
+          const toast = this.showToast('截图保存失败');
+          toast.present();
+        });
       });
   }
 
   showActionSheet() {
     let actionSheet = this.action.create({
-      cssClass:'share-action',
+      cssClass: 'share-action',
       buttons: [
         {
           text: '分享到好友',
-          cssClass:'iconfont icon-wechat',
-          handler: () => {
-            console.log('分享到好友');
-          }
+          cssClass: 'iconfont icon-wechat',
+          handler: () => this.shareToWechat()
         },
         {
           text: '分享到朋友圈',
-          cssClass:'iconfont icon-wechat_timeline',
-          handler: () => {
-            console.log('分享到朋友圈');
-          }
+          cssClass: 'iconfont icon-wechat_timeline',
+          handler: () => this.shareToTimeLine()
         }
       ],
-      
     });
     actionSheet.present();
   }
 
-  assembleHTML(url: any) {
-    return this.sanitizer.bypassSecurityTrustHtml(url);
+  shareToWechat() {
+    let wechat = (<any>window).Wechat;
+    wechat.isInstalled((installed: any) => {
+      if (!installed) {
+        this.showToast('您没有安装微信！').present();
+        return;
+      }
+    }, (reason: any) => {
+      this.showToast('分享失败: ' + reason).present();
+    });
+    wechat.share({
+      message: {
+        title: '承兑贴现计算器',
+        description: '商盟订货提供线上商城与进销存完美融合的SaaS系统，为批发商提供PC商城，微商城，专属APP商城，进销存后台，在线支付的一体化解决方案。',
+        thumb: this.url,
+        media: {
+          type: wechat.Type.IMAGE,
+          image: this.url
+        }
+      },
+      scene: wechat.Scene.SESSION
+    }, () => {
+      this.showToast('分享成功').present();
+    }, (reason: any) => {
+      this.showToast('分享失败：' + reason).present();
+    });
+  }
+
+  showToast(msg = '') {
+    return this.toast.create({
+      message: msg,
+      duration: 2000,
+      cssClass: 'cus-toast',
+      position: 'middle',
+    });
+  }
+
+  shareToTimeLine() {
+    let wechat = (<any>window).Wechat;
+    wechat.isInstalled((installed: any) => {
+      if (!installed) {
+        this.showToast('您没有安装微信！').present();
+        return;
+      }
+    }, (reason: any) => {
+      this.showToast('分享失败: ' + reason).present();
+    });
+    wechat.share({
+      message: {
+        title: '承兑贴现计算器',
+        description: '商盟订货提供线上商城与进销存完美融合的SaaS系统，为批发商提供PC商城，微商城，专属APP商城，进销存后台，在线支付的一体化解决方案。',
+        thumb: this.url,
+        media: {
+          type: wechat.Type.IMAGE,
+          image: this.url
+        }
+      },
+      scene: wechat.Scene.TIMELINE   // share to Timeline
+    }, () => {
+      this.showToast('分享成功').present();
+    }, (reason: any) => {
+      this.showToast('分享失败: ' + reason).present();
+    });
   }
 
 }

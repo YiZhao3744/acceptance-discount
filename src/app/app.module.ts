@@ -10,7 +10,6 @@ import { ShareComponent } from '../pages/share/share.component';
 import { CounterPage } from '../pages/counter/counter';
 import { FormsModule } from '@angular/forms';
 import { Screenshot } from '@ionic-native/screenshot';
-
 @NgModule({
   declarations: [
     MyApp,

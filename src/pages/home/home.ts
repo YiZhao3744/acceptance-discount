@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef,Renderer, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { ToastController, NavController } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
@@ -9,21 +9,21 @@ import { CounterPage } from '../counter/counter';
 })
 export class HomePage implements OnInit {
 
-  segment = 1;
-  list = [
-    { text: '按利率计算', value: 1 },
-    { text: '按每十万扣费计算', value: 2 }
-  ];
   formlist1 = [
-    { label: '票面金额', value: null, unit: '万元', holder: '多有多赚，少有少有盈' },
-    { label: '年利率', value: null, isYear: true, unit: '%', holder: '不多不少，合适就好' },
-    { label: '月利率', value: null, unit: '‰', holder: '不多不少，合适就好' },
-    { label: '手续费', value: null, unit: '元/十万', holder: '露一手，留一手' },
+    { label: '票面金额', value: null, unit: '万元', holder: '请输入金额' },
+    { label: '年利率', value: null, isYear: true, unit: '%', holder: '请输入年利率' },
+    { label: '月利率', value: null, unit: '‰', holder: '' },
+    { label: '手续费', value: null, unit: '元/十万', holder: '请输入手续费' },
     { label: '打款费', value: null, unit: '元', holder: '请输入打款费' }
   ];
   formlist2 = [
-    { label: '每十万扣费', value: null, unit: '元', holder: '减了扣的，就是赚的~' },
+    { label: '每十万扣费', value: null, unit: '元', holder: '请输入金额' },
   ];
+
+  list = [
+    { text: '按利率计算', value: 'kk' },
+    { text: '按每十万扣费计算', value: 'pp' }
+  ]
 
   formlist = [];
 
@@ -49,12 +49,12 @@ export class HomePage implements OnInit {
     [{ title: '折合月利率', canAdd: false, value: '--', unit: '‰' }]
   ];
 
-  @ViewChild('btn')btn: ElementRef;
+  @ViewChild('btn') btn: ElementRef;
+  segment = 'kk';
 
   constructor(
     private toast: ToastController,
     private navCtrl: NavController,
-    private render: Renderer
   ) {
   }
 
@@ -66,12 +66,6 @@ export class HomePage implements OnInit {
     this.dateEnd = moment(new Date(now + oneyear)).format('YYYY-MM-DD');
     this.getWeek();
     this.setDays();
-    // const timer= setInterval(() => {
-    //   if(this.btn) {
-    //     this.render.setElementClass(this.btn.nativeElement,'segment-activated',true);
-    //     clearInterval(timer);
-    //   }
-    // },10);
   }
 
   setDays() {
@@ -125,7 +119,7 @@ export class HomePage implements OnInit {
   // 按利率计算
   calculate(item?: any) {
     // tslint:disable-next-line:triple-equals
-    if (this.segment == 2) {
+    if (this.segment == 'pp') {
       // 折合年利率 = 十万扣费*360 / 计息天数 /100000*100
       // tslint:disable-next-line:triple-equals
       if (this.formlist2[0].value == '' || this.formlist2[0].value == null) {
@@ -181,16 +175,17 @@ export class HomePage implements OnInit {
   }
 
   // 按每十万扣费计算
-  segmentChanged(item) {
+  segmentChanged(item: any) {
     // tslint:disable-next-line:triple-equals
-    if (this.segment == item.value) { return; }
+    // debugger; 
+    // if (this.segment == item.value) { return; }
     switch (item.value) {
-      case 2:
+      case 'pp':
         this.cards2[0][0].value = this.cards1[0][0].value;
         this.formlist = this.formlist2;
         this.cards = this.cards2;
         break;
-      default:
+      case 'kk':
         this.cards1[0][0].value = this.cards2[0][0].value;
         this.formlist = this.formlist1;
         this.cards = this.cards1;
