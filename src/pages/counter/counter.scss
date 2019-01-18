@@ -1,4 +1,5 @@
 app-counter {
+
     .layout {
         height: 100%;
         position: relative;
@@ -45,7 +46,7 @@ app-counter {
                     padding-bottom: .3em;
                     button {
                         &:last-of-type {
-                            background: orange;
+                            background: #ab253a;
                         }
                     }
                 }

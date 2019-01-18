@@ -6,22 +6,24 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { ShareComponent } from '../pages/share/share.component';
 import { CounterPage } from '../pages/counter/counter';
 import { FormsModule } from '@angular/forms';
 import { Screenshot } from '@ionic-native/screenshot';
 import { Clipboard } from '@ionic-native/clipboard';
-
+import { HttpService } from '../provoders/http.service';
+import { HttpClientModule } from '@angular/common/http';
+import { shareService } from '../provoders/share.service';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ShareComponent,
     CounterPage
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     IonicModule.forRoot(MyApp, {
       mode: 'ios',
       iconMode: 'ios',
@@ -31,7 +33,6 @@ import { Clipboard } from '@ionic-native/clipboard';
   entryComponents: [
     MyApp,
     HomePage,
-    ShareComponent,
     CounterPage
   ],
   providers: [
@@ -39,6 +40,9 @@ import { Clipboard } from '@ionic-native/clipboard';
     SplashScreen,
     Screenshot,
     Clipboard,
+    HttpService,
+    shareService,
+    InAppBrowser,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

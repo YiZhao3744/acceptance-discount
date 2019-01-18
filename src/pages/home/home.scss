@@ -9,27 +9,39 @@
          background: white;
          bottom: 0;
          border-top: 1px solid #c1bebe;
-         height: 5rem;
+         height: 5.5rem;
          padding-top: 2px;
+
          button {
            background-color: transparent;
            width: 25%;
            padding: 0;
            color: #807c7c;
+
+           ion-icon {
+             display: none;
+           }
+
            .button-inner {
              display: block;
            }
+
            .fabtn {
-            display: block;
-            line-height: 28px;
+             display: block;
+             line-height: 28px;
            }
          }
        }
 
+       .fab-ios.activated {
+         background-color: transparent;
+       }
+
+
        .layout {
          background: #eee;
          min-height: 100%;
-         margin-bottom: 5rem;
+         margin-bottom: 5.5rem;
 
          ion-segment {
            background: white;
@@ -43,7 +55,7 @@
            }
 
            .segment-activated {
-             color: orange !important;
+             color: #ab253a !important;
              position: relative;
              background-color: transparent !important;
            }
@@ -51,7 +63,7 @@
            .segment-activated:after {
              content: '';
              width: 30%;
-             background: orange;
+             background: #ab253a;
              height: 1px;
              display: block;
              position: absolute;
@@ -96,7 +108,7 @@
              }
 
              .red {
-               color: red;
+               color: #ab253a
              }
            }
          }
@@ -114,7 +126,7 @@
              align-items: center;
 
              .red {
-               color: red;
+               color: #ab253a
              }
 
              ion-icon {

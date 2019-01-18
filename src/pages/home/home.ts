@@ -1,7 +1,12 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import * as moment from 'moment';
-import { ToastController, NavController } from 'ionic-angular';
+import { ToastController, NavController, AlertController } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
+import { Clipboard } from '@ionic-native/clipboard';
+import { Observable } from 'rxjs';
+import { HttpService } from '../../provoders/http.service';
+import { shareService } from '../../provoders/share.service';
+import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
 
 @Component({
   selector: 'page-home',
@@ -27,7 +32,7 @@ export class HomePage implements OnInit {
 
   formlist = [];
 
-  dateStart: string = moment(new Date()).format('YYYY-MM-DD');
+  dateStart: string;
   dayNames = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
   startDay;
   endDay;
@@ -51,28 +56,63 @@ export class HomePage implements OnInit {
 
   @ViewChild('btn') btn: ElementRef;
   segment = 'kk';
+  ticket = null;
 
   footerList = [
-    { text:'收藏', value:1, icon: 'shoucang'},
-    { text:'清除', value:2, icon: 'qingchu'},
-    { text:'复制', value:3, icon: 'fuzhi'},
-    { text:'分享', value:4, icon: 'fenxiang'}
-  ]
+    // { text:'收藏', value:1, icon: 'shoucang'},
+    { text: '清除', value: 2, icon: 'qingchu' },
+    { text: '复制', value: 3, icon: 'fuzhi' },
+    { text: '分享', value: 4, icon: 'fenxiang' }
+  ];
+
+  holidayStart: string = '';
+  holidayEnd: string = '';
+  browserIns: InAppBrowserObject;
 
   constructor(
     private toast: ToastController,
     private navCtrl: NavController,
+    private clipboard: Clipboard,
+    private alert: AlertController,
+    private service: HttpService,
+    private shareService: shareService,
+    private inAppBrowser: InAppBrowser
   ) {
   }
 
   ngOnInit() {
     this.formlist = this.formlist1;
     this.cards = this.cards1;
-    const now = new Date().getTime();
-    const oneyear = 1000 * 60 * 60 * 24 * 365;
-    this.dateEnd = moment(new Date(now + oneyear)).format('YYYY-MM-DD');
-    this.getWeek();
-    this.setDays();
+    this.initDate();
+  }
+
+  initDate() {
+    this.dateStart = moment(new Date()).format('YYYY-MM-DD');
+    this.dateEnd = moment(new Date()).add(1, 'year').format('YYYY-MM-DD');
+    // this.getWeek();
+    this.getHoliday();
+  }
+
+  getHoliday() {
+    Observable.forkJoin(
+      this.service.post('api/holiday', { nowTime: this.dateStart }),
+      this.service.post('api/holiday', { nowTime: this.dateEnd })
+    ).subscribe((res: any) => {
+      if (res[0].code === 0) {
+        this.startDay = res[0].holiday.weekDayStr || '';
+        this.holidayStart = res[0].holiday.holidayName || '';
+      }
+      if (res[1].code === 0) {
+        this.endDay = res[1].holiday.weekDayStr || '';
+        this.holidayEnd = res[1].holiday.holidayName || '';
+        this.addDay = res[1].holiday.addDay || 0;
+        this.setDays();
+      }
+      this.isStartRed = this.startDay === '星期六' || this.startDay === '星期天';
+      this.isEndRed = this.endDay === '星期六' || this.endDay === '星期天';
+    }, err => {
+      console.log(err);
+    })
   }
 
   setDays() {
@@ -107,7 +147,7 @@ export class HomePage implements OnInit {
       return;
     }
     setTimeout(() => {
-      this.getWeek();
+      this.getHoliday();
       this.calculate();
     }, 50);
   }
@@ -177,7 +217,7 @@ export class HomePage implements OnInit {
 
   clearCard() {
     this.cards[1][0].value = '--';
-    this.cards[1][1].value = '--';
+    if (this.cards[1][1]) this.cards[1][1].value = '--';
     this.cards[0][1].value = '--';
   }
 
@@ -205,4 +245,169 @@ export class HomePage implements OnInit {
       value: item.value
     });
   }
+
+  getTools(item: any, btn) {
+    console.log(btn);
+    switch (item.value) {
+      case 1:
+
+        break;
+      case 2:
+        this.showConfirm();
+        break;
+      case 3:
+        this.doCopy();
+        break;
+      case 4:
+        this.shareService.onShare();
+        break;
+    }
+  }
+
+  doCopy() {
+    let str: string;
+    if(this.segment === 'kk') {
+      str = 
+      `票号: ${this.ticket || '-'}
+      票据金额: ${this.formlist[0].value || '-' }万元
+      年利率: ${this.formlist[1].value || '-'}%
+      月利率: ${this.formlist[2].value || '-'}‰
+      手续费: ${this.formlist[3].value || '-'}元/十万
+      打款费: ${this.formlist[4].value || '-'}元
+      贴现日期: ${this.dateStart}
+      到期日期: ${this.dateEnd}
+      调整天数: ${this.addDay}天
+      计息天数: ${this.cards[0][0].value}天
+      每十万贴息: ${this.cards[0][1].value || '--'}元
+      贴现利息: ${this.cards[1][0].value || '--'}元
+      贴现金额: ${this.cards[1][1].value || '--'}元`
+    } else {
+      str = 
+      `票号: ${this.ticket || '-'}
+      十万扣费: ${this.formlist[0].value || '-' }元
+      折合年利率: ${this.cards[0][1].value || '--'}%
+      折合月利率: ${this.cards[1][0].value || '--'}‰
+      贴现日期: ${this.dateStart}
+      到期日期: ${this.dateEnd}
+      调整天数: ${this.addDay}天
+      计息天数: ${this.cards[0][0].value}天`;
+    }
+    this.clipboard.copy(str).then(() => {
+      this.shareService.showToast('复制成功！').present();
+    });
+  }
+ 
+
+
+  skipToTools() {
+    this.browserIns = this.inAppBrowser.create('http://www.saihujinrong.com/calc/index.html#/tools', '_self', {
+      location: 'no',
+      zoom: 'no',
+      hideurlbar: 'no',
+      navigationbuttoncolor: 'white',
+      toolbarcolor: '#ab253a',
+      hidenavigationbuttons: 'no',
+    });
+    window['myBrowser'] = this.browserIns;
+    // this.browserIns.executeScript({
+    //   code: `const toolBox = document.createElement('div');
+    //   toolBox.className = 'tool-box';
+    //   const title = document.createElement('span');
+    //   const back = document.createElement('span');
+    //   back.className = 'back iconfont icon-back';
+    //   title.className = 'title';
+    //   title.innerText = '工具箱';
+    //   back.addEventListener('touchstart', function() {
+    //     window['myBrowser'].hide();
+    //   },false);
+    //   toolBox.appendChild(title);
+    //   toolBox.appendChild(back);
+    //   document.body.appendChild(toolBox);`
+    // }).then(() => {
+    //   this.browserIns.insertCSS({
+    //     file: '../../assets/libs/tool.css'
+    //   }).catch(err => {
+    //     console.log(err);
+    //   });
+    // });
+
+    this.browserIns.on('loadstart').subscribe(res => {
+      alert(res + 'start');
+      alert(JSON.stringify(res));
+    }, err => {
+      alert(err + 'start');
+      alert(JSON.stringify(err));
+    });
+    this.browserIns.on('loadstop').subscribe(res => {
+      alert(res + 'stop');
+      alert(JSON.stringify(res));
+      this.test();
+    }, err => {
+      alert(err + 'stop');
+      alert(JSON.stringify(err));
+    });
+    this.browserIns.on('loaderror').subscribe(res => {
+      alert(res + 'error');
+      alert(JSON.stringify(res));
+    }, err => {
+      alert(err + 'err');
+      alert(JSON.stringify(err));
+    });
+    this.browserIns.on('exit').subscribe(res => {
+      alert(res + 'exit');
+      alert(JSON.stringify(res));
+    }, err => {
+      alert(err + 'exit');
+      alert(JSON.stringify(err));
+    });
+  }
+
+  test() {
+    const toolBox = document.createElement('div');
+    toolBox.className = 'tool-box';
+    const title = document.createElement('span');
+    const back = document.createElement('span');
+    back.className = 'back iconfont icon-back';
+    title.className = 'title';
+    title.innerText = '工具箱';
+    back.addEventListener('touchstart', function () {
+      window['myBrowser'].hide();
+    }, false);
+    toolBox.appendChild(title);
+    toolBox.appendChild(back);
+    document.body.appendChild(toolBox);
+    alert(title);
+    alert(JSON.stringify(document));
+
+  }
+
+  showConfirm() {
+    this.alert.create({
+      subTitle: '一键清除',
+      message: '清除后不可恢复，确定清除吗？',
+      buttons: [
+        {
+          text: '取消',
+          role: 'cancel'
+        },
+        {
+          text: '确定',
+          handler: () => {
+            this.clear();
+            this.clearCard();
+          }
+        }
+      ]
+    }).present();
+  }
+
+  clear() {
+    this.ticket = null;
+    this.addDay = 0;
+    this.formlist.map(v => {
+      v.value = null;
+    });
+    this.initDate();
+  }
+
 }

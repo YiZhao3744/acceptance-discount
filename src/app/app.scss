@@ -12,9 +12,10 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
 ion-header {
   ion-toolbar {
-    background: orange;
+    background: #ab253a;
     color: white;
   }
 }
@@ -38,8 +39,11 @@ ion-header {
   float: left;
 }
 
-.share {
+.tool {
   float: right;
+  span {
+    font-size: 22px;
+  }
 }
 
 .toolbar-background {
@@ -72,8 +76,8 @@ ion-app.ios [padding] {
 
 .cus-toast .toast-wrapper,
 .cus-toast .loading-wrapper {
-  border: 1px solid orange;
-  color: orange;
+  border: 1px solid #ab253a;
+  color: #ab253a;
   text-align: center;
   background: white;
   width: 60%;
@@ -82,7 +86,7 @@ ion-app.ios [padding] {
     border: 1px solid !important;
 
     .toast-message {
-      color: orange;
+      color: #ab253a;
     }
   }
 }
