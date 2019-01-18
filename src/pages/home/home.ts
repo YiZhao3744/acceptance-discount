@@ -347,6 +347,11 @@ export class HomePage implements OnInit {
       alert(err + 'stop');
       alert(JSON.stringify(err));
     });
+
+  window.onhashchange = function() {
+    alert('url  changed');
+  }
+
     this.browserIns.on('loaderror').subscribe(res => {
       alert(res + 'error');
       alert(JSON.stringify(res));
