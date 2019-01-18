@@ -10,6 +10,8 @@ import { ShareComponent } from '../pages/share/share.component';
 import { CounterPage } from '../pages/counter/counter';
 import { FormsModule } from '@angular/forms';
 import { Screenshot } from '@ionic-native/screenshot';
+import { Clipboard } from '@ionic-native/clipboard';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -36,6 +38,7 @@ import { Screenshot } from '@ionic-native/screenshot';
     StatusBar,
     SplashScreen,
     Screenshot,
+    Clipboard,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

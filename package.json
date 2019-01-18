@@ -20,6 +20,7 @@
     "@angular/http": "5.2.11",
     "@angular/platform-browser": "5.2.11",
     "@angular/platform-browser-dynamic": "5.2.11",
+    "@ionic-native/clipboard": "^4.19.0",
     "@ionic-native/core": "~4.18.0",
     "@ionic-native/screenshot": "^4.19.0",
     "@ionic-native/splash-screen": "~4.18.0",
@@ -28,6 +29,7 @@
     "@ionic/storage": "2.2.0",
     "com.darktalker.cordova.screenshot": "~0.1.5",
     "cordova-android": "7.1.4",
+    "cordova-clipboard": "1.2.1",
     "cordova-ios": "4.5.5",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
@@ -59,7 +61,8 @@
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-wechat": {
         "WECHATAPPID": "wx12884f87b52252ea"
-      }
+      },
+      "cordova-clipboard": {}
     },
     "platforms": [
       "android",
