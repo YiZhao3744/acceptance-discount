@@ -52,6 +52,13 @@ export class HomePage implements OnInit {
   @ViewChild('btn') btn: ElementRef;
   segment = 'kk';
 
+  footerList = [
+    { text:'收藏', value:1, icon: 'shoucang'},
+    { text:'清除', value:2, icon: 'qingchu'},
+    { text:'复制', value:3, icon: 'fuzhi'},
+    { text:'分享', value:4, icon: 'fenxiang'}
+  ]
+
   constructor(
     private toast: ToastController,
     private navCtrl: NavController,

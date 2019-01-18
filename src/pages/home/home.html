@@ -60,5 +60,10 @@
       </div>
     </div>
   </div>
-
+  <ion-fab class="mfab" bottom>
+    <button ion-fab *ngFor="let item of footerList">
+        <span class="{{'fabtn iconfont icon-' + item.icon}}"></span>
+        <span class="fabtn">{{item.text}}</span>
+    </button>
+  </ion-fab>
 </ion-content>
