@@ -308,8 +308,6 @@ export class HomePage implements OnInit {
       this.shareService.showToast('复制成功！').present();
     });
   }
- 
-
 
   skipToTools() {
     this.browserIns = this.inAppBrowser.create('http://www.saihujinrong.com/calc/index.html#/tools', '_self', {
@@ -346,6 +344,9 @@ export class HomePage implements OnInit {
     this.browserIns.on('loadstart').subscribe(res => {
       alert(res + 'start');
       alert(JSON.stringify(res));
+      if (res.url.match("mobile/close")) {
+        this.browserIns.close();
+      }
     }, err => {
       alert(err + 'start');
       alert(JSON.stringify(err));
@@ -358,6 +359,11 @@ export class HomePage implements OnInit {
       alert(err + 'stop');
       alert(JSON.stringify(err));
     });
+
+  window.onhashchange = function() {
+    alert('url  changed');
+  }
+
     this.browserIns.on('loaderror').subscribe(res => {
       alert(res + 'error');
       alert(JSON.stringify(res));
