@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { HttpService } from '../../provoders/http.service';
 import { shareService } from '../../provoders/share.service';
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
-
+import { Keyboard } from '@ionic-native/keyboard';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
@@ -56,7 +56,7 @@ export class HomePage implements OnInit {
 
   @ViewChild('btn') btn: ElementRef;
   segment = 'kk';
-  ticket = null;
+  remark = null;
 
   footerList = [
     // { text:'收藏', value:1, icon: 'shoucang'},
@@ -76,7 +76,8 @@ export class HomePage implements OnInit {
     private alert: AlertController,
     private service: HttpService,
     private shareService: shareService,
-    private inAppBrowser: InAppBrowser
+    private inAppBrowser: InAppBrowser,
+    private keyboard: Keyboard
   ) {
   }
 
@@ -84,6 +85,11 @@ export class HomePage implements OnInit {
     this.formlist = this.formlist1;
     this.cards = this.cards1;
     this.initDate();
+    this.keyboard.hideFormAccessoryBar(false);
+    window.addEventListener('native.keyboardshow',(e) =>{
+      alert(e);
+      alert(JSON.stringify(e));
+    }); 
   }
 
   initDate() {
@@ -183,11 +189,16 @@ export class HomePage implements OnInit {
 
     } else {
       if (item && item.isYear && item.value) {
-        this.formlist1[2].value = (item.value / 12).toFixed(8);
+        this.formlist1[2].value = (item.value / 1.2).toFixed(8);
       }
       // tslint:disable-next-line:triple-equals
       if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
         this.clearCard();
+        return;
+      }
+      if(this.formlist1[0].value >= 1000000) {
+        this.shareService.showToast('最多输入六位票面金额').present();
+        this.formlist1[0].value = null;
         return;
       }
       // tslint:disable-next-line:triple-equals
@@ -210,7 +221,8 @@ export class HomePage implements OnInit {
       this.cards[1][1].value = f;
 
       // 每十万贴息
-      this.cards[0][1].value = (d * 10).toFixed(2);
+      // 100000*年利率/360/100*计息天数+手续费
+      this.cards[0][1].value = Number(b).toFixed(2);
     }
 
   }
@@ -268,7 +280,7 @@ export class HomePage implements OnInit {
     let str: string;
     if(this.segment === 'kk') {
       str = 
-      `票号: ${this.ticket || '-'}
+      `备注: ${this.remark || '-'}
       票据金额: ${this.formlist[0].value || '-' }万元
       年利率: ${this.formlist[1].value || '-'}%
       月利率: ${this.formlist[2].value || '-'}‰
@@ -283,7 +295,7 @@ export class HomePage implements OnInit {
       贴现金额: ${this.cards[1][1].value || '--'}元`
     } else {
       str = 
-      `票号: ${this.ticket || '-'}
+      `备注: ${this.remark || '-'}
       十万扣费: ${this.formlist[0].value || '-' }元
       折合年利率: ${this.cards[0][1].value || '--'}%
       折合月利率: ${this.cards[1][0].value || '--'}‰
@@ -402,7 +414,7 @@ export class HomePage implements OnInit {
   }
 
   clear() {
-    this.ticket = null;
+    this.remark = null;
     this.addDay = 0;
     this.formlist.map(v => {
       v.value = null;

@@ -14,6 +14,7 @@ import { HttpService } from '../provoders/http.service';
 import { HttpClientModule } from '@angular/common/http';
 import { shareService } from '../provoders/share.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Keyboard } from '@ionic-native/keyboard';
 @NgModule({
   declarations: [
     MyApp,
@@ -43,6 +44,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
     HttpService,
     shareService,
     InAppBrowser,
+    Keyboard,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
