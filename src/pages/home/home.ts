@@ -17,7 +17,7 @@ export class HomePage implements OnInit {
   formlist1 = [
     { label: '票面金额', value: null, unit: '万元', holder: '请输入金额' },
     { label: '年利率', value: null, isYear: true, unit: '%', holder: '请输入年利率' },
-    { label: '月利率', value: null, unit: '‰', holder: '' },
+    { label: '月利率', value: null, isMonth: true, unit: '‰', holder: '' },
     { label: '手续费', value: null, unit: '元/十万', holder: '请输入手续费' },
     { label: '打款费', value: null, unit: '元', holder: '请输入打款费' }
   ];
@@ -85,11 +85,6 @@ export class HomePage implements OnInit {
     this.formlist = this.formlist1;
     this.cards = this.cards1;
     this.initDate();
-    this.keyboard.hideFormAccessoryBar(false);
-    window.addEventListener('native.keyboardshow',(e) =>{
-      alert(e);
-      alert(JSON.stringify(e));
-    }); 
   }
 
   initDate() {
@@ -171,6 +166,9 @@ export class HomePage implements OnInit {
 
   // 按利率计算
   calculate(item?: any) {
+    if(this.keyboard.isVisible) {
+      this.keyboard.hide();
+    }
     // tslint:disable-next-line:triple-equals
     if (this.segment == 'pp') {
       // 折合年利率 = 十万扣费*360 / 计息天数 /100000*100
@@ -190,6 +188,9 @@ export class HomePage implements OnInit {
     } else {
       if (item && item.isYear && item.value) {
         this.formlist1[2].value = (item.value / 1.2).toFixed(8);
+      }
+      if (item && item.isMonth && item.value) {
+        this.formlist1[1].value = (item.value * 1.2).toFixed(8);
       }
       // tslint:disable-next-line:triple-equals
       if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
