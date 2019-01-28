@@ -16,25 +16,26 @@
       </ion-segment-button>
     </ion-segment>
     <form action="javascript:return true;" (submit)="calculate()">
-      <ion-input padding clearInput="true" [ngModelOptions]="{standalone: true}" class="finput" placeholder="备注（选填）" type="number" [(ngModel)]="remark"></ion-input>
+      <ion-input padding clearInput="true" [ngModelOptions]="{standalone: true}" class="finput" placeholder="备注（选填）"
+        type="text" [(ngModel)]="remark"></ion-input>
       <ion-list>
         <ion-item *ngFor="let item of formlist">
           <ion-label color="primary">{{item.label}}</ion-label>
-          <ion-input padding-left clearInput="true" type="number"  [ngModelOptions]="{standalone: true}" (ionBlur)="calculate(item)" placeholder="{{item.holder}}"
-            [(ngModel)]="item.value"></ion-input>
+          <ion-input padding-left clearInput="true" type="number" [ngModelOptions]="{standalone: true}" (ionBlur)="calculate(item)"
+            placeholder="{{item.holder}}" [(ngModel)]="item.value"></ion-input>
           <span item-end>{{item.unit}}</span>
         </ion-item>
         <ion-item>
           <ion-label color="primary">贴现日</ion-label>
           <ion-datetime displayFormat="YYYY-MM-DD" min="2019-01-01" max="2020-12-31" cancelText="取消" doneText="确定"
             [(ngModel)]="dateStart" (ngModelChange)="onPick()" [ngModelOptions]="{standalone: true}"></ion-datetime>
-          <span [class.red]="isStartRed" item-end> {{holidayStart}} {{startDay}}</span>
+          <span [class.red]="isStartRed" item-end><i>{{holidayStart}}</i> {{startDay}}</span>
         </ion-item>
         <ion-item>
           <ion-label color="primary">到期日</ion-label>
           <ion-datetime displayFormat="YYYY-MM-DD" cancelText="取消" doneText="确定" min="2019-01-01" max="2020-12-31"
             (ngModelChange)="onPick()" [(ngModel)]="dateEnd" [ngModelOptions]="{standalone: true}"></ion-datetime>
-          <span [class.red]="isEndRed" item-end> {{holidayEnd}} {{endDay}}</span>
+          <span [class.red]="isEndRed" class="weektext" item-end><i>{{holidayEnd}}</i> {{endDay}}</span>
         </ion-item>
       </ion-list>
     </form>
@@ -42,6 +43,7 @@
       <ion-item>
         <ion-label>调整天数</ion-label>
         <div class="right" item-end>
+          <button ion-button class="btns" [class.actived]="item.actived" small *ngFor="let item of btnlist" value="item.value" (tap)="onclick(item)">{{item.text}}</button>
           <ion-icon ios="ios-remove-circle-outline" md="md-remove-circle-outline" tappable (click)="onIncres()"></ion-icon>
           <span [class.red]="addDay">{{addDay}}</span>
           <ion-icon md="md-add-circle-outline" ios="ios-add-circle-outline" tappable (click)="onAdd()"></ion-icon>

@@ -80,6 +80,8 @@
            padding: 0 16px;
          }
 
+         
+
          ion-list {
            margin-bottom: 0;
 
@@ -99,7 +101,8 @@
              }
 
              ion-datetime {
-               width: 75%;
+               width: 100%;
+               text-align: left;
              }
 
              span {
@@ -108,7 +111,13 @@
              }
 
              .red {
-               color: #ab253a
+               color: #ab253a;
+             }
+             .weektext {
+               i {
+                color:  #ab253a;
+                font-style: normal;
+               }
              }
            }
          }
@@ -124,9 +133,18 @@
              min-width: 25%;
              display: flex;
              align-items: center;
-
+             min-width: 75%;
+             .btns {
+               background: transparent;
+               border: 1px solid  #ab253a;
+               color:  #ab253a;
+             }
+              .actived {
+                background:  #ab253a;
+                color: white;
+              }
              .red {
-               color: #ab253a
+               color: #ab253a;
              }
 
              ion-icon {

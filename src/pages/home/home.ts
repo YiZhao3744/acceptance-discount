@@ -19,7 +19,7 @@ export class HomePage implements OnInit {
     { label: '年利率', value: null, isYear: true, unit: '%', holder: '请输入年利率' },
     { label: '月利率', value: null, isMonth: true, unit: '‰', holder: '' },
     { label: '手续费', value: null, unit: '元/十万', holder: '请输入手续费' },
-    { label: '打款费', value: null, unit: '元', holder: '请输入打款费' }
+    // { label: '打款费', value: null, unit: '元', holder: '请输入打款费' }
   ];
   formlist2 = [
     { label: '每十万扣费', value: null, unit: '元', holder: '请输入金额' },
@@ -48,6 +48,12 @@ export class HomePage implements OnInit {
     { title: '贴现金额', canAdd: true, value: '--', unit: '元' }]
   ];
 
+  btnlist = [
+    { text: '一年电', value: 1, actived: true },
+    { text: '半年电', value: 2, actived: false },
+    { text: '纸票', value: 3, actived: false }
+  ];
+
   cards2 = [
     [{ title: '计息天数', canAdd: false, value: '--', unit: '天' },
     { title: '折合年利率', canAdd: false, value: '--', unit: '%' }],
@@ -68,6 +74,8 @@ export class HomePage implements OnInit {
   holidayStart: string = '';
   holidayEnd: string = '';
   browserIns: InAppBrowserObject;
+  dayCache;
+  activeBtn;
 
   constructor(
     private toast: ToastController,
@@ -84,7 +92,25 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.formlist = this.formlist1;
     this.cards = this.cards1;
+    this.activeBtn = this.btnlist[0];
     this.initDate();
+  }
+
+  onclick(item) {
+    if (item.actived) return;
+    this.activeBtn = item;
+    this.btnlist.map(v => {
+      v.actived = false;
+    });
+    item.actived = true;
+    if (this.activeBtn.value === 2) {
+      this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
+    } else if (this.activeBtn.value === 3) {
+      this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
+    } else {
+      this.dateEnd = moment(this.dateStart).add(1, 'year').format('YYYY-MM-DD');
+    }
+    this.getHoliday();
   }
 
   initDate() {
@@ -109,11 +135,11 @@ export class HomePage implements OnInit {
         this.addDay = res[1].holiday.addDay || 0;
         this.setDays();
       }
-      this.isStartRed = this.startDay === '星期六' || this.startDay === '星期天';
-      this.isEndRed = this.endDay === '星期六' || this.endDay === '星期天';
+      this.isStartRed = this.startDay === '星期六' || this.startDay === '星期日';
+      this.isEndRed = this.endDay === '星期六' || this.endDay === '星期日';
     }, err => {
       console.log(err);
-    })
+    });
   }
 
   setDays() {
@@ -122,7 +148,16 @@ export class HomePage implements OnInit {
     const days = now.getTime() - start.getTime();
     // tslint:disable-next-line:radix
     const day = parseInt(String(days / (1000 * 60 * 60 * 24))) + this.addDay;
-    this.cards[0][0].value = day;
+    // this.cards[0][0].value = day;
+    this.dayCache = day;
+    if (this.activeBtn.value === 2) {
+      this.cards[0][0].value =this.dayCache;
+    } else if (this.activeBtn.value === 3) {
+      this.addDay += 3;
+      this.cards[0][0].value = this.dayCache + this.addDay;
+    } else {
+      this.cards[0][0].value = this.dayCache;
+    }
     this.calculate();
   }
 
@@ -166,7 +201,7 @@ export class HomePage implements OnInit {
 
   // 按利率计算
   calculate(item?: any) {
-    if(this.keyboard.isVisible) {
+    if (this.keyboard.isVisible) {
       this.keyboard.hide();
     }
     // tslint:disable-next-line:triple-equals
@@ -192,12 +227,32 @@ export class HomePage implements OnInit {
       if (item && item.isMonth && item.value) {
         this.formlist1[1].value = (item.value * 1.2).toFixed(8);
       }
+//       每十万贴息=100000*年利率/360/100*计息天数+每十万手续费
+// 年利率=每十万扣费*360/计息天数/100000
+// 月利率=年利率/12
+// 贴现利息= （100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
+// 贴现金额 = 票面金额*10000（100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
+
+      // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
+      const c = this.formlist1[1].value;
+      if (c == '' || c == null) return;
+      const a = (100000 * c) / 360 / 100;
+      const ss = this.formlist1[3].value || 0;
+      const b = a * this.cards[0][0].value + Number(ss);
+
+      // 每十万贴息
+      // 100000*年利率/360/100*计息天数+手续费
+      this.cards[0][1].value = Number(b).toFixed(2);
       // tslint:disable-next-line:triple-equals
       if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
-        this.clearCard();
+        // this.clearCard();
         return;
       }
-      if(this.formlist1[0].value >= 1000000) {
+      // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
+      const d = b * this.formlist1[0].value / 10;
+      this.cards[1][0].value = d.toFixed(2);
+
+      if (this.formlist1[0].value >= 1000000) {
         this.shareService.showToast('最多输入六位票面金额').present();
         this.formlist1[0].value = null;
         return;
@@ -208,22 +263,11 @@ export class HomePage implements OnInit {
         return;
       }
 
-      // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
-      const c = this.formlist1[1].value;
-      const a = (100000 * c) / 360 / 100;
-      const b = a * this.cards[0][0].value + this.formlist1[3].value;
-      const d = b * this.formlist1[0].value / 10;
-      this.cards[1][0].value = d.toFixed(2);
-
-      // 贴现金额= 票面金额*10000 - 贴现利息 - 打款费
-      const m = this.formlist1[4].value || 0;
+      // 贴现金额= 票面金额*10000 - 贴现利息
+      // const m = this.formlist1[4].value || 0;
       const e = this.formlist1[0].value * 10000 - this.cards[1][0].value;
-      const f = e - m;
-      this.cards[1][1].value = f;
-
-      // 每十万贴息
-      // 100000*年利率/360/100*计息天数+手续费
-      this.cards[0][1].value = Number(b).toFixed(2);
+      const f = e;
+      this.cards[1][1].value = f.toFixed(2);
     }
 
   }
@@ -251,6 +295,12 @@ export class HomePage implements OnInit {
         this.cards = this.cards1;
         break;
     }
+    this.btnlist.map(v => {
+      v.actived = false;
+    });
+    this.btnlist[0].actived = true;
+    this.activeBtn = this.btnlist[0];
+    this.initDate();
   }
 
   onSkip(item) {
@@ -279,14 +329,13 @@ export class HomePage implements OnInit {
 
   doCopy() {
     let str: string;
-    if(this.segment === 'kk') {
-      str = 
-      `备注: ${this.remark || '-'}
-      票据金额: ${this.formlist[0].value || '-' }万元
+    if (this.segment === 'kk') {
+      str =
+        `备注: ${this.remark || '-'}
+      票据金额: ${this.formlist[0].value || '-'}万元
       年利率: ${this.formlist[1].value || '-'}%
       月利率: ${this.formlist[2].value || '-'}‰
       手续费: ${this.formlist[3].value || '-'}元/十万
-      打款费: ${this.formlist[4].value || '-'}元
       贴现日期: ${this.dateStart}
       到期日期: ${this.dateEnd}
       调整天数: ${this.addDay}天
@@ -295,9 +344,9 @@ export class HomePage implements OnInit {
       贴现利息: ${this.cards[1][0].value || '--'}元
       贴现金额: ${this.cards[1][1].value || '--'}元`
     } else {
-      str = 
-      `备注: ${this.remark || '-'}
-      十万扣费: ${this.formlist[0].value || '-' }元
+      str =
+        `备注: ${this.remark || '-'}
+      十万扣费: ${this.formlist[0].value || '-'}元
       折合年利率: ${this.cards[0][1].value || '--'}%
       折合月利率: ${this.cards[1][0].value || '--'}‰
       贴现日期: ${this.dateStart}
@@ -361,9 +410,9 @@ export class HomePage implements OnInit {
       alert(JSON.stringify(err));
     });
 
-  window.onhashchange = function() {
-    alert('url  changed');
-  }
+    window.onhashchange = function () {
+      alert('url  changed');
+    }
 
     this.browserIns.on('loaderror').subscribe(res => {
       alert(res + 'error');
