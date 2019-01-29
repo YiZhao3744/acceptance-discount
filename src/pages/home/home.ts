@@ -142,21 +142,23 @@ export class HomePage implements OnInit {
     });
   }
 
-  setDays() {
+  setDays(flag: boolean = true) {
     const start = new Date(this.dateStart);
     const now = new Date(this.dateEnd);
     const days = now.getTime() - start.getTime();
     // tslint:disable-next-line:radix
     const day = parseInt(String(days / (1000 * 60 * 60 * 24))) + this.addDay;
-    // this.cards[0][0].value = day;
     this.dayCache = day;
-    if (this.activeBtn.value === 2) {
-      this.cards[0][0].value =this.dayCache;
-    } else if (this.activeBtn.value === 3) {
-      this.addDay += 3;
-      this.cards[0][0].value = this.dayCache + this.addDay;
-    } else {
-      this.cards[0][0].value = this.dayCache;
+    if(!flag) this.cards[0][0].value = day;
+    else {
+      if (this.activeBtn.value === 2) {
+        this.cards[0][0].value =this.dayCache;
+      } else if (this.activeBtn.value === 3) {
+        this.addDay += 3;
+        this.cards[0][0].value = this.dayCache + 3;
+      } else {
+        this.cards[0][0].value = this.dayCache;
+      }
     }
     this.calculate();
   }
@@ -191,12 +193,12 @@ export class HomePage implements OnInit {
   onIncres() {
     if (this.addDay === 0) { return; }
     this.addDay -= 1;
-    this.setDays();
+    this.setDays(false);
   }
 
   onAdd() {
     this.addDay += 1;
-    this.setDays();
+    this.setDays(false);
   }
 
   // 按利率计算

@@ -33,12 +33,11 @@
     "com.darktalker.cordova.screenshot": "~0.1.5",
     "cordova-android": "7.1.4",
     "cordova-clipboard": "1.2.1",
-    "cordova-ios": "^4.5.5",
+    "cordova-ios": "4.5.5",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-inappbrowser": "3.0.0",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
     "cordova-plugin-ionic-webview": "^2.0.0",
-    "cordova-plugin-sharesdk": "^0.1.0",
     "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-statusbar": "2.4.2",
     "cordova-plugin-wechat": "^2.6.0",
@@ -70,8 +69,7 @@
         "WECHATAPPID": "wx12884f87b52252ea"
       },
       "cordova-clipboard": {},
-      "cordova-plugin-inappbrowser": {},
-      "cordova-plugin-sharesdk": {}
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
       "android",
