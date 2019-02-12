@@ -82,8 +82,8 @@ export class shareService {
         });
         wechat.share({
             message: {
-                title: '承兑贴现计算器',
-                description: '商盟订货提供线上商城与进销存完美融合的SaaS系统，为批发商提供PC商城，微商城，专属APP商城，进销存后台，在线支付的一体化解决方案。',
+                title: '承兑汇票计算器',
+                description: '一款专业，高效，便捷的票据交易工具，在票据交易过程中可轻松的计算出票据交易信息，为广大中小企业在承兑贴现过程中提供便捷的计算服务！',
                 thumb: this.url,
                 media: {
                     type: wechat.Type.IMAGE,
@@ -119,15 +119,15 @@ export class shareService {
         });
         wechat.share({
             message: {
-                title: '承兑贴现计算器',
-                description: '商盟订货提供线上商城与进销存完美融合的SaaS系统，为批发商提供PC商城，微商城，专属APP商城，进销存后台，在线支付的一体化解决方案。',
+                title: '承兑汇票计算器',
+                description: '一款专业，高效，便捷的票据交易工具，在票据交易过程中可轻松的计算出票据交易信息，为广大中小企业在承兑贴现过程中提供便捷的计算服务！',
                 thumb: this.url,
                 media: {
                     type: wechat.Type.IMAGE,
                     image: this.url
                 }
             },
-            scene: wechat.Scene.TIMELINE   // share to Timeline
+            scene: wechat.Scene.TIMELINE
         }, () => {
             this.showToast('分享成功').present();
         }, (reason: any) => {

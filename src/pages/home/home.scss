@@ -124,8 +124,9 @@
 
          .cards {
            ion-label {
-             color: gray;
+             color: gray !important;
              font-size: 15px;
+             min-width: 60px;
            }
 
            .right {
@@ -133,16 +134,31 @@
              min-width: 25%;
              display: flex;
              align-items: center;
-             min-width: 75%;
-             .btns {
-               background: transparent;
-               border: 1px solid  #ab253a;
-               color:  #ab253a;
+             width: 75%;
+             .left {
+               width: 37%;
+               display: flex;
+               align-items: center;
+               .text-input {
+                margin: 8px;
+                width: calc(100% - 16px);
+                text-align: center;
+               }
              }
-              .actived {
+             .btns {
+              width: 61%;
+              display: flex;
+               .mbtn {
+                background: transparent;
+                border: 1px solid  #ab253a;
+                color:  #ab253a;
+                padding: 0 .5em;
+               }
+               .actived {
                 background:  #ab253a;
                 color: white;
               }
+             }
              .red {
                color: #ab253a;
              }
