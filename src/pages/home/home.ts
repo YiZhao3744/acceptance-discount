@@ -97,7 +97,7 @@ export class HomePage implements OnInit {
   }
 
   onclick(item) {
-    if (item.actived) return;
+    // if (item.actived) return;
     this.activeBtn = item;
     this.btnlist.map(v => {
       v.actived = false;
