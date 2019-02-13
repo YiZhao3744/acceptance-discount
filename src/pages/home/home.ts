@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import * as moment from 'moment';
-import { 
-  ToastController, NavController, 
-  AlertController, DateTime } from 'ionic-angular';
+import {
+  ToastController, NavController,
+  AlertController, DateTime
+} from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Observable } from 'rxjs';
@@ -81,8 +82,8 @@ export class HomePage implements OnInit {
   browserIns: InAppBrowserObject;
   dayCache;
   activeBtn;
-  maxDay = moment().add(1,'year').format('YYYY');
-  minDay = moment().add(-2,'year').format('YYYY');
+  maxDay = moment().add(1, 'year').format('YYYY');
+  minDay = moment().add(-2, 'year').format('YYYY');
 
   constructor(
     private toast: ToastController,
@@ -104,7 +105,6 @@ export class HomePage implements OnInit {
   }
 
   onClickBtn(item) {
-    // if (item.actived) return;
     this.activeBtn = item;
     this.btnlist.map(v => {
       v.actived = false;
@@ -123,8 +123,8 @@ export class HomePage implements OnInit {
   initDate() {
     this.dateStart = moment(new Date()).format('YYYY-MM-DD');
     this.dateEnd = moment(new Date()).add(1, 'year').format('YYYY-MM-DD');
-    if(this.startTime) this.startTime.setValue(this.dateStart);
-    if(this.endTime) this.endTime.setValue(this.dateEnd);
+    if (this.startTime) this.startTime.setValue(this.dateStart);
+    if (this.endTime) this.endTime.setValue(this.dateEnd);
     this.getHoliday();
   }
 
@@ -133,7 +133,7 @@ export class HomePage implements OnInit {
       this.service.post('api/holiday', { nowTime: this.dateStart }),
       this.service.post('api/holiday', { nowTime: this.dateEnd })
     ).subscribe((res: any) => {
-      if(res[0].code === 0  || res[1].code === 0) {
+      if (res[0].code === 0 || res[1].code === 0) {
         if (res[0].code === 0) {
           this.startDay = res[0].holiday.weekDayStr || '';
           this.holidayStart = res[0].holiday.holidayName || '';
@@ -159,19 +159,19 @@ export class HomePage implements OnInit {
 
   requestOnError() {
     this.getWeek();
-    if(!this.isEndRed) {
+    if (!this.isEndRed) {
       this.addDay = 0;
       return;
     }
-    switch(this.endDay) {
+    switch (this.endDay) {
       case '星期六':
-      this.addDay = 2;
-      break;
+        this.addDay = 2;
+        break;
       case '星期日':
-      this.addDay = 1;
-      break;
+        this.addDay = 1;
+        break;
       default:
-      this.addDay = 0;
+        this.addDay = 0;
     }
   }
 
@@ -182,10 +182,10 @@ export class HomePage implements OnInit {
     this.getAddDay();
     const day = parseInt(String(days / (1000 * 60 * 60 * 24))) + this.addDay;
     this.dayCache = day;
-    if(!flag) this.cards[0][0].value = day;
+    if (!flag) this.cards[0][0].value = day;
     else {
       if (this.activeBtn.value === 2) {
-        this.cards[0][0].value =this.dayCache;
+        this.cards[0][0].value = this.dayCache;
       } else if (this.activeBtn.value === 3) {
         this.addDay += 3;
         this.cards[0][0].value = this.dayCache + 3;
@@ -198,7 +198,7 @@ export class HomePage implements OnInit {
 
   getAddDay() {
     let str = String(this.addDay);
-    if(str.length > 1 && str[0] === '0') {
+    if (str.length > 1 && str[0] === '0') {
       this.addDay = Number(str.substr(1));
     } else {
       this.addDay = Number(str);
@@ -209,14 +209,14 @@ export class HomePage implements OnInit {
     const si = new Date(this.dateStart).getDay();
     this.startDay = this.dayNames[si];
     this.isStartRed = si === 0 || si === 6 || false;
-    if (!this.dateEnd) return; 
+    if (!this.dateEnd) return;
     const ei = new Date(this.dateEnd).getDay();
     this.endDay = this.dayNames[ei];
     this.isEndRed = ei === 0 || ei === 6 || false;
   }
 
   onPickDate() {
-    if(new Date(this.dateEnd).getTime() < new Date(this.dateStart).getTime()) {
+    if (new Date(this.dateEnd).getTime() < new Date(this.dateStart).getTime()) {
       const t = this.toast.create({
         message: '到期日期不能小于贴现日期',
         duration: 2000,
@@ -234,7 +234,7 @@ export class HomePage implements OnInit {
   }
 
   onIncres() {
-    if (this.addDay === 0) return; 
+    if (this.addDay === 0) return;
     this.addDay -= 1;
     this.setDays(false);
   }
@@ -245,13 +245,18 @@ export class HomePage implements OnInit {
   }
 
   onInputChange(item) {
-    if(item.isRate) {
-      if(item.value !=='') {
+    if (item.isRate) {
+      if (item.value === '') {
         this.formlist1[2].value = null;
         this.formlist1[1].value = null;
       }
-    } else if( this.segment === 'lac') {
-       // 折合年利率 = 十万扣费*360 / 计息天数 /100000*100
+    }
+    this.getLac(); 
+  }
+
+  getLac() {
+    if (this.segment === 'lac') {
+      // 折合年利率 = 十万扣费*360 / 计息天数 /100000*100
       // tslint:disable-next-line:triple-equals
       if (this.formlist2[0].value == '' || this.formlist2[0].value == null) {
         this.cards[0][1].value = '--';
@@ -265,13 +270,12 @@ export class HomePage implements OnInit {
       // 折合月利率 = 十万扣费*360/计息天数/100000*100/1.2
       this.cards[1][0].value = (b / 1.2).toFixed(2);
     }
-   
   }
 
   getRate(item) {
-    if(!item.isRate) return;
-    if (item.value !=='') {
-      if(item.isYear) {
+    if (!item.isRate) return;
+    if (item.value !== '') {
+      if (item.isYear) {
         this.formlist1[2].value = (item.value / 1.2).toFixed(4);
       } else {
         this.formlist1[1].value = (item.value * 1.2).toFixed(4);
@@ -281,51 +285,53 @@ export class HomePage implements OnInit {
 
   // 按利率计算
   calculate(item?: any) {
-    if (this.keyboard.isVisible) {
-      this.keyboard.hide();
+    // if (this.keyboard.isVisible) {
+    //   this.keyboard.hide();
+    // }
+    this.getLac();
+
+    // tslint:disable-next-line:triple-equals
+    // 每十万贴息=100000*年利率/360/100*计息天数+每十万手续费
+    // 年利率=每十万扣费*360/计息天数/100000
+    // 月利率=年利率/12
+    // 贴现利息= （100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
+    // 贴现金额 = 票面金额*10000（100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
+
+    // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
+    const c = this.formlist1[1].value;
+    if (c == '' || c == null) return;
+    const a = (100000 * c) / 360 / 100;
+    const ss = this.formlist1[3].value || 0;
+    const b = a * this.cards[0][0].value + Number(ss);
+
+    // 每十万贴息
+    // 100000*年利率/360/100*计息天数+手续费
+    this.cards[0][1].value = Number(b).toFixed(2);
+    // tslint:disable-next-line:triple-equals
+    if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
+      // this.clearCard();
+      return;
+    }
+    // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
+    const d = b * this.formlist1[0].value / 10;
+    this.cards[1][0].value = d.toFixed(2);
+
+    if (this.formlist1[0].value >= 1000000) {
+      this.shareService.showToast('最多输入六位票面金额').present();
+      this.formlist1[0].value = null;
+      return;
     }
     // tslint:disable-next-line:triple-equals
-      // 每十万贴息=100000*年利率/360/100*计息天数+每十万手续费
-      // 年利率=每十万扣费*360/计息天数/100000
-      // 月利率=年利率/12
-      // 贴现利息= （100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
-      // 贴现金额 = 票面金额*10000（100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
+    if (this.formlist1[1].value == '' || this.formlist1[1].value == null) {
+      this.clearCard();
+      return;
+    }
 
-      // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
-      const c = this.formlist1[1].value;
-      if (c == '' || c == null) return;
-      const a = (100000 * c) / 360 / 100;
-      const ss = this.formlist1[3].value || 0;
-      const b = a * this.cards[0][0].value + Number(ss);
-
-      // 每十万贴息
-      // 100000*年利率/360/100*计息天数+手续费
-      this.cards[0][1].value = Number(b).toFixed(2);
-      // tslint:disable-next-line:triple-equals
-      if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
-        // this.clearCard();
-        return;
-      }
-      // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
-      const d = b * this.formlist1[0].value / 10;
-      this.cards[1][0].value = d.toFixed(2);
-
-      if (this.formlist1[0].value >= 1000000) {
-        this.shareService.showToast('最多输入六位票面金额').present();
-        this.formlist1[0].value = null;
-        return;
-      }
-      // tslint:disable-next-line:triple-equals
-      if (this.formlist1[1].value == '' || this.formlist1[1].value == null) {
-        this.clearCard();
-        return;
-      }
-
-      // 贴现金额= 票面金额*10000 - 贴现利息
-      // const m = this.formlist1[4].value || 0;
-      const e = this.formlist1[0].value * 10000 - this.cards[1][0].value;
-      const f = e;
-      this.cards[1][1].value = f.toFixed(2);
+    // 贴现金额= 票面金额*10000 - 贴现利息
+    // const m = this.formlist1[4].value || 0;
+    const e = this.formlist1[0].value * 10000 - this.cards[1][0].value;
+    const f = e;
+    this.cards[1][1].value = f.toFixed(2);
   }
 
   clearCard() {

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      承兑贴现计算器
+      承兑汇票计算器
     </ion-title>
     <!-- <button class="tool btn" (tap)="skipToTools()">
       <span class="iconfont icon-gongjuxiang"></span>
@@ -68,10 +68,9 @@
         <div class="right" item-end>
           <div class="left">
               <ion-icon ios="ios-remove-circle-outline" 
-              md="md-remove-circle-outline" 
-               (tap)="onIncres()"></ion-icon>
-              <!-- <span [class.red]="addDay">{{addDay}}</span> -->
-              <ion-input padding [ngModelOptions]="{standalone: true}"
+              md="md-remove-circle-outline" tappable
+               (click)="onIncres()"></ion-icon>
+              <ion-input [ngModelOptions]="{standalone: true}"
               type="number" [(ngModel)]="addDay"
               (ionChange)="setDays(false)"
               [class.red]="addDay"></ion-input>

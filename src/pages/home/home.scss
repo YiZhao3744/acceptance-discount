@@ -148,15 +148,19 @@
              .btns {
               width: 61%;
               display: flex;
+              align-items: center;
+              justify-content: space-between;
                .mbtn {
                 background: transparent;
                 border: 1px solid  #ab253a;
                 color:  #ab253a;
                 padding: 0 .5em;
+                margin: 0;
                }
                .actived {
                 background:  #ab253a;
                 color: white;
+                border: none;
               }
              }
              .red {
@@ -166,6 +170,8 @@
              ion-icon {
                font-size: 2.5rem;
                color: gray;
+               position: relative;
+               z-index: 89;
              }
            }
 
