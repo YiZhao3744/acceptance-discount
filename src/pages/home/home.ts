@@ -34,7 +34,7 @@ export class HomePage implements OnInit {
   ]
 
   formlist = [];
-
+  isLac = false;
   dateStart: string;
   dayNames = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
   startDay;
@@ -350,11 +350,13 @@ export class HomePage implements OnInit {
         this.cards2[0][0].value = this.cards1[0][0].value;
         this.formlist = this.formlist2;
         this.cards = this.cards2;
+        this.isLac = true;
         break;
       case 'rate':
         this.cards1[0][0].value = this.cards2[0][0].value;
         this.formlist = this.formlist1;
         this.cards = this.cards1;
+        this.isLac = false;
         break;
     }
     this.btnlist.map(v => {
@@ -392,7 +394,7 @@ export class HomePage implements OnInit {
     let str: string;
     if (this.segment === 'rate') {
       str =
-        `备注: ${this.remark || '-'}
+      `备注: ${this.remark || '-'}
       票据金额: ${this.formlist[0].value || '-'}万元
       年利率: ${this.formlist[1].value || '-'}%
       月利率: ${this.formlist[2].value || '-'}‰
@@ -406,7 +408,7 @@ export class HomePage implements OnInit {
       贴现金额: ${this.cards[1][1].value || '--'}元`
     } else {
       str =
-        `备注: ${this.remark || '-'}
+      `备注: ${this.remark || '-'}
       十万扣费: ${this.formlist[0].value || '-'}元
       折合年利率: ${this.cards[0][1].value || '--'}%
       折合月利率: ${this.cards[1][0].value || '--'}‰

@@ -94,7 +94,10 @@
                font-size: 15px;
                min-width: 60px;
              }
-
+             .lac {
+              min-width: 75px;
+              margin-right: 0;
+             }
              ion-input {
                font-size: 15px;
                padding-left: 0 !important;
@@ -128,15 +131,19 @@
              font-size: 15px;
              min-width: 60px;
            }
-
+           .lac {
+            min-width: 75px;
+            margin-right: 0;
+           }
            .right {
              justify-content: space-between;
              min-width: 25%;
              display: flex;
              align-items: center;
              width: 75%;
+             padding-left: 3px;
              .left {
-               width: 37%;
+               width: 33%;
                display: flex;
                align-items: center;
                .text-input {
@@ -146,7 +153,7 @@
                }
              }
              .btns {
-              width: 61%;
+              width: 60%;
               display: flex;
               align-items: center;
               justify-content: space-between;
@@ -168,13 +175,15 @@
              }
 
              ion-icon {
-               font-size: 2.5rem;
+               font-size: 3rem;
                color: gray;
                position: relative;
                z-index: 89;
              }
            }
-
+           .rlac {
+             padding-left: 8px;
+           }
            .mgrid {
              background: #eee;
              padding-bottom: .5em;

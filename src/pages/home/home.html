@@ -23,7 +23,7 @@
         type="text" [(ngModel)]="remark"></ion-input>
       <ion-list>
         <ion-item *ngFor="let item of formlist">
-          <ion-label color="primary">{{item.label}}</ion-label>
+          <ion-label color="primary" [class.lac]="isLac">{{item.label}}</ion-label>
           <ion-input padding-left clearInput="true" type="number" 
           [ngModelOptions]="{standalone: true}" (ionBlur)="calculate(item)"
             placeholder="{{item.holder}}" [(ngModel)]="item.value" 
@@ -33,7 +33,7 @@
           <span item-end>{{item.unit}}</span>
         </ion-item>
         <ion-item>
-          <ion-label color="primary">贴现日</ion-label>
+          <ion-label color="primary" [class.lac]="isLac">贴现日</ion-label>
           <ion-datetime #startTime
             displayFormat="YYYY-MM-DD" 
             min="{{minDay}}"
@@ -47,7 +47,7 @@
           item-end><i>{{holidayStart}}</i> {{startDay}}</span>
         </ion-item>
         <ion-item>
-          <ion-label color="primary">到期日</ion-label>
+          <ion-label color="primary" [class.lac]="isLac">到期日</ion-label>
           <ion-datetime #endTime
             displayFormat="YYYY-MM-DD"
             cancelText="取消"
@@ -64,8 +64,8 @@
     </form>
     <div class="cards">
       <ion-item>
-        <ion-label>调整天数</ion-label>
-        <div class="right" item-end>
+        <ion-label [class.lac]="isLac">调整天数</ion-label>
+        <div class="right" item-end [class.rlac]="isLac">
           <div class="left">
               <ion-icon ios="ios-remove-circle-outline" 
               md="md-remove-circle-outline" tappable
