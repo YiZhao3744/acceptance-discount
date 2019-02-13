@@ -1,6 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import * as moment from 'moment';
-import { ToastController, NavController, AlertController } from 'ionic-angular';
+import { 
+  ToastController, NavController, 
+  AlertController, DateTime } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Observable } from 'rxjs';
@@ -16,8 +18,8 @@ export class HomePage implements OnInit {
 
   formlist1 = [
     { label: '票面金额', value: null, unit: '万元', holder: '请输入金额' },
-    { label: '年利率', value: null, isYear: true, unit: '%', holder: '请输入年利率' },
-    { label: '月利率', value: null, isMonth: true, unit: '‰', holder: '' },
+    { label: '年利率', value: null, isRate: true, isYear: true, unit: '%', holder: '请输入年利率' },
+    { label: '月利率', value: null, isRate: true, isMonth: true, unit: '‰', holder: '请输入月利率' },
     { label: '手续费', value: null, unit: '元/十万', holder: '请输入手续费' },
     // { label: '打款费', value: null, unit: '元', holder: '请输入打款费' }
   ];
@@ -26,8 +28,8 @@ export class HomePage implements OnInit {
   ];
 
   list = [
-    { text: '按利率计算', value: 'kk' },
-    { text: '按每十万扣费计算', value: 'pp' }
+    { text: '按利率计算', value: 'rate' },
+    { text: '按每十万扣费计算', value: 'lac' }
   ]
 
   formlist = [];
@@ -61,7 +63,10 @@ export class HomePage implements OnInit {
   ];
 
   @ViewChild('btn') btn: ElementRef;
-  segment = 'kk';
+  @ViewChild('startTime') startTime: DateTime;
+  @ViewChild('endTime') endTime: DateTime;
+
+  segment = 'rate';
   remark = null;
 
   footerList = [
@@ -76,6 +81,8 @@ export class HomePage implements OnInit {
   browserIns: InAppBrowserObject;
   dayCache;
   activeBtn;
+  maxDay = moment().add(1,'year').format('YYYY');
+  minDay = moment().add(-2,'year').format('YYYY');
 
   constructor(
     private toast: ToastController,
@@ -85,7 +92,7 @@ export class HomePage implements OnInit {
     private service: HttpService,
     private shareService: shareService,
     private inAppBrowser: InAppBrowser,
-    private keyboard: Keyboard
+    private keyboard: Keyboard,
   ) {
   }
 
@@ -96,7 +103,7 @@ export class HomePage implements OnInit {
     this.initDate();
   }
 
-  onclick(item) {
+  onClickBtn(item) {
     // if (item.actived) return;
     this.activeBtn = item;
     this.btnlist.map(v => {
@@ -116,7 +123,8 @@ export class HomePage implements OnInit {
   initDate() {
     this.dateStart = moment(new Date()).format('YYYY-MM-DD');
     this.dateEnd = moment(new Date()).add(1, 'year').format('YYYY-MM-DD');
-    // this.getWeek();
+    if(this.startTime) this.startTime.setValue(this.dateStart);
+    if(this.endTime) this.endTime.setValue(this.dateEnd);
     this.getHoliday();
   }
 
@@ -125,28 +133,53 @@ export class HomePage implements OnInit {
       this.service.post('api/holiday', { nowTime: this.dateStart }),
       this.service.post('api/holiday', { nowTime: this.dateEnd })
     ).subscribe((res: any) => {
-      if (res[0].code === 0) {
-        this.startDay = res[0].holiday.weekDayStr || '';
-        this.holidayStart = res[0].holiday.holidayName || '';
-      }
-      if (res[1].code === 0) {
-        this.endDay = res[1].holiday.weekDayStr || '';
-        this.holidayEnd = res[1].holiday.holidayName || '';
-        this.addDay = res[1].holiday.addDay || 0;
+      if(res[0].code === 0  || res[1].code === 0) {
+        if (res[0].code === 0) {
+          this.startDay = res[0].holiday.weekDayStr || '';
+          this.holidayStart = res[0].holiday.holidayName || '';
+        }
+        if (res[1].code === 0) {
+          this.endDay = res[1].holiday.weekDayStr || '';
+          this.holidayEnd = res[1].holiday.holidayName || '';
+          this.addDay = res[1].holiday.addDay || 0;
+          this.setDays();
+        }
+        this.isStartRed = this.startDay === '星期六' || this.startDay === '星期日';
+        this.isEndRed = this.endDay === '星期六' || this.endDay === '星期日';
+      } else {
+        this.requestOnError();
         this.setDays();
       }
-      this.isStartRed = this.startDay === '星期六' || this.startDay === '星期日';
-      this.isEndRed = this.endDay === '星期六' || this.endDay === '星期日';
     }, err => {
       console.log(err);
+      this.requestOnError();
+      this.setDays();
     });
+  }
+
+  requestOnError() {
+    this.getWeek();
+    if(!this.isEndRed) {
+      this.addDay = 0;
+      return;
+    }
+    switch(this.endDay) {
+      case '星期六':
+      this.addDay = 2;
+      break;
+      case '星期日':
+      this.addDay = 1;
+      break;
+      default:
+      this.addDay = 0;
+    }
   }
 
   setDays(flag: boolean = true) {
     const start = new Date(this.dateStart);
     const now = new Date(this.dateEnd);
     const days = now.getTime() - start.getTime();
-    // tslint:disable-next-line:radix
+    this.getAddDay();
     const day = parseInt(String(days / (1000 * 60 * 60 * 24))) + this.addDay;
     this.dayCache = day;
     if(!flag) this.cards[0][0].value = day;
@@ -163,25 +196,35 @@ export class HomePage implements OnInit {
     this.calculate();
   }
 
+  getAddDay() {
+    let str = String(this.addDay);
+    if(str.length > 1 && str[0] === '0') {
+      this.addDay = Number(str.substr(1));
+    } else {
+      this.addDay = Number(str);
+    }
+  }
+
   getWeek() {
     const si = new Date(this.dateStart).getDay();
     this.startDay = this.dayNames[si];
     this.isStartRed = si === 0 || si === 6 || false;
-    if (!this.dateEnd) { return; }
+    if (!this.dateEnd) return; 
     const ei = new Date(this.dateEnd).getDay();
     this.endDay = this.dayNames[ei];
     this.isEndRed = ei === 0 || ei === 6 || false;
   }
 
-  onPick() {
-    if (new Date(this.dateStart).getTime() > new Date(this.dateEnd).getTime()) {
+  onPickDate() {
+    if(new Date(this.dateEnd).getTime() < new Date(this.dateStart).getTime()) {
       const t = this.toast.create({
-        message: '贴现日期不能大于到期日期',
-        duration: 3000,
+        message: '到期日期不能小于贴现日期',
+        duration: 2000,
         cssClass: 'cus-toast',
         position: 'middle',
       });
       t.present();
+      this.initDate();
       return;
     }
     setTimeout(() => {
@@ -191,7 +234,7 @@ export class HomePage implements OnInit {
   }
 
   onIncres() {
-    if (this.addDay === 0) { return; }
+    if (this.addDay === 0) return; 
     this.addDay -= 1;
     this.setDays(false);
   }
@@ -201,14 +244,14 @@ export class HomePage implements OnInit {
     this.setDays(false);
   }
 
-  // 按利率计算
-  calculate(item?: any) {
-    if (this.keyboard.isVisible) {
-      this.keyboard.hide();
-    }
-    // tslint:disable-next-line:triple-equals
-    if (this.segment == 'pp') {
-      // 折合年利率 = 十万扣费*360 / 计息天数 /100000*100
+  onInputChange(item) {
+    if(item.isRate) {
+      if(item.value !=='') {
+        this.formlist1[2].value = null;
+        this.formlist1[1].value = null;
+      }
+    } else if( this.segment === 'lac') {
+       // 折合年利率 = 十万扣费*360 / 计息天数 /100000*100
       // tslint:disable-next-line:triple-equals
       if (this.formlist2[0].value == '' || this.formlist2[0].value == null) {
         this.cards[0][1].value = '--';
@@ -217,23 +260,36 @@ export class HomePage implements OnInit {
       }
       const a = this.formlist2[0].value * 360 / this.cards[0][0].value;
       const b = a / 100000 * 100;
-      this.cards[0][1].value = b.toFixed(8);
+      this.cards[0][1].value = b.toFixed(2);
 
       // 折合月利率 = 十万扣费*360/计息天数/100000*100/1.2
-      this.cards[1][0].value = (b / 1.2).toFixed(8);
+      this.cards[1][0].value = (b / 1.2).toFixed(2);
+    }
+   
+  }
 
-    } else {
-      if (item && item.isYear && item.value) {
-        this.formlist1[2].value = (item.value / 1.2).toFixed(8);
+  getRate(item) {
+    if(!item.isRate) return;
+    if (item.value !=='') {
+      if(item.isYear) {
+        this.formlist1[2].value = (item.value / 1.2).toFixed(4);
+      } else {
+        this.formlist1[1].value = (item.value * 1.2).toFixed(4);
       }
-      if (item && item.isMonth && item.value) {
-        this.formlist1[1].value = (item.value * 1.2).toFixed(8);
-      }
-//       每十万贴息=100000*年利率/360/100*计息天数+每十万手续费
-// 年利率=每十万扣费*360/计息天数/100000
-// 月利率=年利率/12
-// 贴现利息= （100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
-// 贴现金额 = 票面金额*10000（100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
+    }
+  }
+
+  // 按利率计算
+  calculate(item?: any) {
+    if (this.keyboard.isVisible) {
+      this.keyboard.hide();
+    }
+    // tslint:disable-next-line:triple-equals
+      // 每十万贴息=100000*年利率/360/100*计息天数+每十万手续费
+      // 年利率=每十万扣费*360/计息天数/100000
+      // 月利率=年利率/12
+      // 贴现利息= （100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
+      // 贴现金额 = 票面金额*10000（100000*年利率/360/100*计息天数+每十万手续费）*票面金额/10
 
       // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
       const c = this.formlist1[1].value;
@@ -270,8 +326,6 @@ export class HomePage implements OnInit {
       const e = this.formlist1[0].value * 10000 - this.cards[1][0].value;
       const f = e;
       this.cards[1][1].value = f.toFixed(2);
-    }
-
   }
 
   clearCard() {
@@ -286,12 +340,12 @@ export class HomePage implements OnInit {
     // debugger; 
     // if (this.segment == item.value) { return; }
     switch (item.value) {
-      case 'pp':
+      case 'lac':
         this.cards2[0][0].value = this.cards1[0][0].value;
         this.formlist = this.formlist2;
         this.cards = this.cards2;
         break;
-      case 'kk':
+      case 'rate':
         this.cards1[0][0].value = this.cards2[0][0].value;
         this.formlist = this.formlist1;
         this.cards = this.cards1;
@@ -312,7 +366,6 @@ export class HomePage implements OnInit {
   }
 
   getTools(item: any, btn) {
-    console.log(btn);
     switch (item.value) {
       case 1:
 
@@ -331,7 +384,7 @@ export class HomePage implements OnInit {
 
   doCopy() {
     let str: string;
-    if (this.segment === 'kk') {
+    if (this.segment === 'rate') {
       str =
         `备注: ${this.remark || '-'}
       票据金额: ${this.formlist[0].value || '-'}万元
@@ -465,6 +518,10 @@ export class HomePage implements OnInit {
           handler: () => {
             this.clear();
             this.clearCard();
+            this.btnlist.map(v => {
+              v.actived = false;
+            });
+            this.btnlist[0].actived = true;
           }
         }
       ]
