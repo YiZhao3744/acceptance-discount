@@ -9,7 +9,8 @@
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
     "lint": "ionic-app-scripts lint",
-    "fire:ios": "ionic cordova run ios --device -- --buildFlag='-UseModernBuildSystem=0'"
+    "fire:ios": "ionic cordova run ios --device -- --buildFlag='-UseModernBuildSystem=0'",
+    "fire": "cordova build android --release --minifyjs --minifycss --optimizejs && bash scripts/sign.sh"
   },
   "dependencies": {
     "@angular/animations": "5.2.11",
@@ -33,7 +34,7 @@
     "com.darktalker.cordova.screenshot": "^0.1.6",
     "cordova-android": "^7.1.4",
     "cordova-clipboard": "^1.2.1",
-    "cordova-ios": "4.5.5",
+    "cordova-ios": "^4.5.5",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-inappbrowser": "^3.0.0",
     "cordova-plugin-ionic-keyboard": "^2.1.3",
