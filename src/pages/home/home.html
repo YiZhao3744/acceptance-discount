@@ -8,91 +8,58 @@
     </button> -->
   </ion-toolbar>
 </ion-header>
+<ion-segment [(ngModel)]="segment" class="mfix" [style.top]="isIos?'6.4rem':'44px'">
+  <ion-segment-button value="{{item.value}}" (tap)="segmentChanged(item)" *ngFor="let item of list" class="segbtn">
+    {{item.text}}
+  </ion-segment-button>
+</ion-segment>
 <ion-content>
-  <div class="layout">
-    <ion-segment [(ngModel)]="segment">
-      <ion-segment-button value="{{item.value}}" 
-       (tap)="segmentChanged(item)" *ngFor="let item of list">
-        {{item.text}}
-      </ion-segment-button>
-    </ion-segment>
+  <div class="layout" [class.outlac]="isLac" [class.show]="isShow">
     <form action="javascript:return true;" (submit)="calculate()">
-      <ion-input padding clearInput="true" 
-      [ngModelOptions]="{standalone: true}" class="finput"
-      placeholder="备注（选填）"
+      <ion-input padding clearInput="true" [ngModelOptions]="{standalone: true}" class="finput" placeholder="备注（选填）"
         type="text" [(ngModel)]="remark"></ion-input>
       <ion-list>
         <ion-item *ngFor="let item of formlist">
           <ion-label color="primary" [class.lac]="isLac">{{item.label}}</ion-label>
-          <ion-input padding-left clearInput="true" type="number" 
-          [ngModelOptions]="{standalone: true}" (ionBlur)="calculate(item)"
-            placeholder="{{item.holder}}" [(ngModel)]="item.value" 
-            (input)="getRate(item)"
-            (ionChange)="onInputChange(item)"
-            ></ion-input>
+          <ion-input padding-left clearInput="true" type="number" [ngModelOptions]="{standalone: true}" (ionBlur)="calculate(item)"
+            placeholder="{{item.holder}}" [(ngModel)]="item.value" (input)="getRate(item)" (ionChange)="onInputChange(item)"></ion-input>
           <span item-end>{{item.unit}}</span>
         </ion-item>
         <ion-item>
           <ion-label color="primary" [class.lac]="isLac">贴现日</ion-label>
-          <ion-datetime #startTime
-            displayFormat="YYYY-MM-DD" 
-            min="{{minDay}}"
-            max="{{maxDay}}"
-            cancelText="取消"
-            doneText="确定"
-            [(ngModel)]="dateStart"
-            (ionChange)="onPickDate()"
-            [ngModelOptions]="{standalone: true}"></ion-datetime>
-          <span [class.red]="isStartRed"
-          item-end><i>{{holidayStart}}</i> {{startDay}}</span>
+          <ion-datetime #startTime displayFormat="YYYY-MM-DD" min="{{minDay}}" max="{{maxDay}}" cancelText="取消"
+            doneText="确定" [(ngModel)]="dateStart" (ionChange)="onPickDate()" [ngModelOptions]="{standalone: true}"></ion-datetime>
+          <span [class.red]="isStartRed" item-end><i>{{holidayStart}}</i> {{startDay}}</span>
         </ion-item>
         <ion-item>
           <ion-label color="primary" [class.lac]="isLac">到期日</ion-label>
-          <ion-datetime #endTime
-            displayFormat="YYYY-MM-DD"
-            cancelText="取消"
-            doneText="确定"
-            min="{{minDay}}"
-            max="{{maxDay}}"
-            (ionChange)="onPickDate()"
-            [(ngModel)]="dateEnd"
-            [ngModelOptions]="{standalone: true}"></ion-datetime>
-          <span [class.red]="isEndRed" 
-          class="weektext" item-end><i>{{holidayEnd}}</i> {{endDay}}</span>
+          <ion-datetime #endTime displayFormat="YYYY-MM-DD" cancelText="取消" doneText="确定" min="{{minDay}}" max="{{maxDay}}"
+            (ionChange)="onPickDate()" [(ngModel)]="dateEnd" [ngModelOptions]="{standalone: true}"></ion-datetime>
+          <span [class.red]="isEndRed" class="weektext" item-end><i>{{holidayEnd}}</i> {{endDay}}</span>
         </ion-item>
       </ion-list>
     </form>
     <div class="cards">
-      <ion-item>
-        <ion-label [class.lac]="isLac">调整天数</ion-label>
-        <div class="right" item-end [class.rlac]="isLac">
+      <div class="days">
+        <span class="lab">调整天数</span>
+        <div class="right">
           <div class="left">
-              <ion-icon ios="ios-remove-circle-outline" 
-              md="md-remove-circle-outline" tappable
-               (click)="onIncres()"></ion-icon>
-              <ion-input [ngModelOptions]="{standalone: true}"
-              type="number" [(ngModel)]="addDay"
-              (ionChange)="setDays(false)"
+            <ion-icon ios="ios-remove-circle-outline" md="md-remove-circle-outline" tappable (click)="onIncres()"></ion-icon>
+            <ion-input [ngModelOptions]="{standalone: true}" type="number" [(ngModel)]="addDay" (ionChange)="setDays(false)"
               [class.red]="addDay"></ion-input>
-              <ion-icon md="md-add-circle-outline"
-              ios="ios-add-circle-outline"  (tap)="onAdd()"></ion-icon>
+            <ion-icon md="md-add-circle-outline" ios="ios-add-circle-outline" (tap)="onAdd()"></ion-icon>
           </div>
           <div class="btns">
-            <button ion-button class="mbtn" 
-            [class.actived]="item.actived" small 
-            *ngFor="let item of btnlist" value="item.value"
-            (tap)="onClickBtn(item)">{{item.text}}</button>
+            <button ion-button class="mbtn" [class.actived]="item.actived" small *ngFor="let item of btnlist" value="item.value"
+              (tap)="onClickBtn(item)">{{item.text}}</button>
           </div>
         </div>
-      </ion-item>
+      </div>
       <div class="mgrid">
         <div class="mrow" *ngFor="let items of cards">
           <div class="mcol" *ngFor="let item of items">
             <h5>{{item.title}}
-              <ion-icon md="md-add-circle-outline" 
-              class="add" ios="ios-add-circle-outline"
-               (tap)="onSkip(item)"
-                *ngIf="item.canAdd"></ion-icon>
+              <ion-icon md="md-add-circle-outline" class="add" ios="ios-add-circle-outline" (tap)="onSkip(item)" *ngIf="item.canAdd"></ion-icon>
             </h5>
             <div class="cont">
               <span>{{item.value}}</span>
@@ -104,8 +71,7 @@
     </div>
   </div>
   <ion-fab class="mfab" bottom>
-    <button ion-fab *ngFor="let item of footerList" 
-    (tap)="getTools(item, btn)" #btn>
+    <button ion-fab *ngFor="let item of footerList" (tap)="getTools(item, btn)">
       <span class="{{'fabtn iconfont icon-' + item.icon}}"></span>
       <span class="fabtn">{{item.text}}</span>
     </button>

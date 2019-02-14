@@ -41,6 +41,7 @@ ion-header {
 
 .tool {
   float: right;
+
   span {
     font-size: 22px;
   }
@@ -104,4 +105,13 @@ ion-app.ios [padding] {
     position: relative;
     left: 25%;
   }
+}
+
+.scroll-content {
+  background: #eee;
+  -webkit-overflow-scrolling: auto;
+}
+body{
+	-webkit-overflow-scrolling: touch;
+	overflow-y: scroll;
 }

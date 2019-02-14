@@ -1,9 +1,6 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
-import {
-  ToastController, NavController,
-  AlertController, DateTime
-} from 'ionic-angular';
+import { NavController, AlertController, DateTime, Toast, Content, Platform } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Observable } from 'rxjs';
@@ -63,7 +60,6 @@ export class HomePage implements OnInit {
     [{ title: '折合月利率', canAdd: false, value: '--', unit: '‰' }]
   ];
 
-  @ViewChild('btn') btn: ElementRef;
   @ViewChild('startTime') startTime: DateTime;
   @ViewChild('endTime') endTime: DateTime;
 
@@ -84,9 +80,14 @@ export class HomePage implements OnInit {
   activeBtn;
   maxDay = moment().add(1, 'year').format('YYYY');
   minDay = moment().add(-2, 'year').format('YYYY');
+  _ytoast: Toast;
+  _mtoast: Toast;
+  isShow = false;
+  isIos = false;
+
+  @ViewChild(Content) content: Content;
 
   constructor(
-    private toast: ToastController,
     private navCtrl: NavController,
     private clipboard: Clipboard,
     private alert: AlertController,
@@ -94,14 +95,25 @@ export class HomePage implements OnInit {
     private shareService: shareService,
     private inAppBrowser: InAppBrowser,
     private keyboard: Keyboard,
+    private plaform: Platform
   ) {
   }
 
   ngOnInit() {
+    this.isIos = this.plaform.is('ios');
     this.formlist = this.formlist1;
     this.cards = this.cards1;
     this.activeBtn = this.btnlist[0];
     this.initDate();
+    this.keyboard.onKeyboardWillShow().subscribe(res => {
+      this.isShow = true;
+    });
+    this.keyboard.onKeyboardHide().subscribe(res => {
+      this.isShow = false;
+      setTimeout(() => {
+        this.content.scrollTo(0, 0);
+      }, 0);
+    });
   }
 
   onClickBtn(item) {
@@ -217,13 +229,7 @@ export class HomePage implements OnInit {
 
   onPickDate() {
     if (new Date(this.dateEnd).getTime() < new Date(this.dateStart).getTime()) {
-      const t = this.toast.create({
-        message: '到期日期不能小于贴现日期',
-        duration: 2000,
-        cssClass: 'cus-toast',
-        position: 'middle',
-      });
-      t.present();
+      this.shareService.showToast('到期日期不能小于贴现日期').present();
       this.initDate();
       return;
     }
@@ -251,7 +257,7 @@ export class HomePage implements OnInit {
         this.formlist1[1].value = null;
       }
     }
-    this.getLac(); 
+    this.getLac();
   }
 
   getLac() {
@@ -265,10 +271,10 @@ export class HomePage implements OnInit {
       }
       const a = this.formlist2[0].value * 360 / this.cards[0][0].value;
       const b = a / 100000 * 100;
-      this.cards[0][1].value = b.toFixed(2);
+      this.cards[0][1].value = parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
 
       // 折合月利率 = 十万扣费*360/计息天数/100000*100/1.2
-      this.cards[1][0].value = (b / 1.2).toFixed(2);
+      this.cards[1][0].value = parseFloat((Math.round(b / 1.2 * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
     }
   }
 
@@ -276,9 +282,25 @@ export class HomePage implements OnInit {
     if (!item.isRate) return;
     if (item.value !== '') {
       if (item.isYear) {
-        this.formlist1[2].value = (item.value / 1.2).toFixed(4);
+        let val = Math.round((Number(item.value) / 1.2) * Math.pow(10, 4)) / Math.pow(10, 4);
+        this.formlist1[2].value = parseFloat(val.toString());
+        if ((Number(item.value) < 0 || Number(item.value) > 100) && !this._ytoast) {
+          this._ytoast = this.shareService.showToast('年利率应在0~100之间');
+          this._ytoast.present();
+          this._ytoast.onDidDismiss(() => {
+            this._ytoast = null;
+          });
+        }
       } else {
-        this.formlist1[1].value = (item.value * 1.2).toFixed(4);
+        let val = Math.round((item.value * 1.2) * Math.pow(10, 4)) / Math.pow(10, 4);
+        this.formlist1[1].value = parseFloat(val.toString());
+        if ((Number(item.value) < 0 || Number(item.value) > 83.33) && !this._mtoast) {
+          this._mtoast = this.shareService.showToast('月利率应在0~83.33之间');
+          this._mtoast.present();
+          this._mtoast.onDidDismiss(() => {
+            this._mtoast = null;
+          });
+        }
       }
     }
   }
@@ -306,7 +328,7 @@ export class HomePage implements OnInit {
 
     // 每十万贴息
     // 100000*年利率/360/100*计息天数+手续费
-    this.cards[0][1].value = Number(b).toFixed(2);
+    this.cards[0][1].value = parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
     // tslint:disable-next-line:triple-equals
     if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
       // this.clearCard();
@@ -314,7 +336,7 @@ export class HomePage implements OnInit {
     }
     // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
     const d = b * this.formlist1[0].value / 10;
-    this.cards[1][0].value = d.toFixed(2);
+    this.cards[1][0].value = parseFloat((Math.round(d * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
 
     if (this.formlist1[0].value >= 1000000) {
       this.shareService.showToast('最多输入六位票面金额').present();
@@ -331,7 +353,7 @@ export class HomePage implements OnInit {
     // const m = this.formlist1[4].value || 0;
     const e = this.formlist1[0].value * 10000 - this.cards[1][0].value;
     const f = e;
-    this.cards[1][1].value = f.toFixed(2);
+    this.cards[1][1].value = parseFloat((Math.round(f * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
   }
 
   clearCard() {
@@ -379,7 +401,14 @@ export class HomePage implements OnInit {
 
         break;
       case 2:
-        this.showConfirm();
+        // this.showConfirm();
+        this.btnlist.map(v => {
+          v.actived = false;
+        });
+        this.btnlist[0].actived = true;
+        this.activeBtn = this.btnlist[0];
+        this.clear();
+        this.clearCard();
         break;
       case 3:
         this.doCopy();
@@ -394,11 +423,11 @@ export class HomePage implements OnInit {
     let str: string;
     if (this.segment === 'rate') {
       str =
-      `备注: ${this.remark || '-'}
-      票据金额: ${this.formlist[0].value || '-'}万元
-      年利率: ${this.formlist[1].value || '-'}%
-      月利率: ${this.formlist[2].value || '-'}‰
-      手续费: ${this.formlist[3].value || '-'}元/十万
+        `      备注: ${this.remark || '--'}
+      票据金额: ${this.formlist[0].value || '--'}万元
+      年利率: ${this.formlist[1].value || '--'}%
+      月利率: ${this.formlist[2].value || '--'}‰
+      手续费: ${this.formlist[3].value || '--'}元/十万
       贴现日期: ${this.dateStart}
       到期日期: ${this.dateEnd}
       调整天数: ${this.addDay}天
@@ -408,8 +437,8 @@ export class HomePage implements OnInit {
       贴现金额: ${this.cards[1][1].value || '--'}元`
     } else {
       str =
-      `备注: ${this.remark || '-'}
-      十万扣费: ${this.formlist[0].value || '-'}元
+        `      备注: ${this.remark || '--'}
+      十万扣费: ${this.formlist[0].value || '--'}元
       折合年利率: ${this.cards[0][1].value || '--'}%
       折合月利率: ${this.cards[1][0].value || '--'}‰
       贴现日期: ${this.dateStart}
@@ -524,12 +553,13 @@ export class HomePage implements OnInit {
         {
           text: '确定',
           handler: () => {
-            this.clear();
-            this.clearCard();
             this.btnlist.map(v => {
               v.actived = false;
             });
             this.btnlist[0].actived = true;
+            this.activeBtn = this.btnlist[0];
+            this.clear();
+            this.clearCard();
           }
         }
       ]

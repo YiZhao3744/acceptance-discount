@@ -1,4 +1,43 @@
    page-home {
+
+     ion-segment {
+       background: white;
+
+       .segbtn {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 15px;
+         border: none !important;
+         height: 3.6rem !important;
+       }
+
+       .segment-activated {
+         color: #ab253a !important;
+         position: relative;
+         background-color: transparent !important;
+       }
+
+       .segment-activated:after {
+         content: '';
+         width: 30%;
+         background: #ab253a;
+         height: 1px;
+         display: block;
+         position: absolute;
+         bottom: 0;
+         left: 50%;
+         transform: translateX(-50%);
+       }
+     }
+
+     .mfix {
+       position: fixed;
+       z-index: 99;
+      //  top: 6.4rem;
+       left: 0;
+     }
+
      ion-content {
        .mfab {
          display: flex;
@@ -9,7 +48,7 @@
          background: white;
          bottom: 0;
          border-top: 1px solid #c1bebe;
-         height: 5.5rem;
+         height: 66px;
          padding-top: 2px;
 
          button {
@@ -41,46 +80,18 @@
        .layout {
          background: #eee;
          min-height: 100%;
-         margin-bottom: 5.5rem;
-
-         ion-segment {
-           background: white;
-
-           ion-segment-button {
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             font-size: 15px;
-             border: none !important;
-           }
-
-           .segment-activated {
-             color: #ab253a !important;
-             position: relative;
-             background-color: transparent !important;
-           }
-
-           .segment-activated:after {
-             content: '';
-             width: 30%;
-             background: #ab253a;
-             height: 1px;
-             display: block;
-             position: absolute;
-             bottom: 0;
-             left: 50%;
-             transform: translateX(-50%);
-           }
-         }
-
+         margin-bottom: 66px;
+         overflow: hidden;
+         overflow-y: auto;
+         -webkit-overflow-scrolling: auto;
+         
          .finput {
-           margin: 1em 0;
+           margin: .5em 0;
            background: white;
            font-size: 15px;
            padding: 0 16px;
+           margin-top: calc(3.2rem + .7em);
          }
-
-         
 
          ion-list {
            margin-bottom: 0;
@@ -94,10 +105,12 @@
                font-size: 15px;
                min-width: 60px;
              }
+
              .lac {
-              min-width: 75px;
-              margin-right: 0;
+               min-width: 75px;
+               margin-right: 0;
              }
+
              ion-input {
                font-size: 15px;
                padding-left: 0 !important;
@@ -116,13 +129,28 @@
              .red {
                color: #ab253a;
              }
+
              .weektext {
                i {
-                color:  #ab253a;
-                font-style: normal;
+                 color: #ab253a;
+                 font-style: normal;
                }
              }
            }
+         }
+
+         .list-ios>.item-block:first-child,
+         .list-ios>.item-block:last-child,
+         .list-ios>.item-wrapper:last-child .item-block {
+           border-top: none;
+         }
+
+         .list-ios>.item-block:last-child {
+           border-bottom: none !important;
+         }
+
+         .list-ios>.item-block:last-child .item-inner {
+           border-bottom: 0.55px solid #c8c7cc;
          }
 
          .cards {
@@ -131,45 +159,48 @@
              font-size: 15px;
              min-width: 60px;
            }
-           .lac {
-            min-width: 75px;
-            margin-right: 0;
-           }
+
            .right {
              justify-content: space-between;
              min-width: 25%;
              display: flex;
              align-items: center;
-             width: 75%;
-             padding-left: 3px;
+             width: calc(100% - 60px);
+
              .left {
-               width: 33%;
+               width: 38%;
                display: flex;
                align-items: center;
+               padding-left: .4em;
+
                .text-input {
-                margin: 8px;
-                width: calc(100% - 16px);
-                text-align: center;
+                 margin: 8px;
+                 width: calc(100% - 16px);
+                 text-align: center;
                }
              }
+
              .btns {
-              width: 60%;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
+               width: 58%;
+               display: flex;
+               align-items: center;
+               justify-content: space-between;
+
                .mbtn {
-                background: transparent;
-                border: 1px solid  #ab253a;
-                color:  #ab253a;
-                padding: 0 .5em;
-                margin: 0;
+                 background: transparent;
+                 border: 1px solid #ab253a;
+                 color: #ab253a;
+                 padding: 0 .5em;
+                 margin: 0;
                }
+
                .actived {
-                background:  #ab253a;
-                color: white;
-                border: none;
-              }
+                 background: #ab253a;
+                 color: white;
+                 border: none;
+               }
              }
+
              .red {
                color: #ab253a;
              }
@@ -181,9 +212,7 @@
                z-index: 89;
              }
            }
-           .rlac {
-             padding-left: 8px;
-           }
+
            .mgrid {
              background: #eee;
              padding-bottom: .5em;
@@ -240,6 +269,28 @@
                }
              }
            }
+         }
+       }
+
+       .outlac,
+       .show {
+         margin-bottom: 0;
+       }
+
+
+       .days {
+         padding: 0 16px;
+         display: flex;
+         background: white;
+         align-items: center;
+         height: 3.2rem;
+         min-height: 4.4rem;
+
+         .lab {
+           color: gray;
+           font-size: 15px;
+           width: 60px;
+           display: block;
          }
        }
      }
