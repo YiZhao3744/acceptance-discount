@@ -17,7 +17,7 @@ export class TabsPage {
   ];
 
   constructor( private event: Events
-    ) { }
+  ) { }
 
   ngOnInit(): void {
   }

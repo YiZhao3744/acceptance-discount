@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as moment from 'moment';
-import { NavController, AlertController, DateTime, Toast, Content, Events } from 'ionic-angular';
+import { NavController, AlertController, DateTime, Toast, Content, Events, Platform } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Observable } from 'rxjs';
@@ -76,6 +76,7 @@ export class HomePage implements OnInit {
   _ytoast: Toast;
   _mtoast: Toast;
   isShow = false;
+  isIos = false;
 
   @ViewChild(Content) content: Content;
   @ViewChild('layout') layout: ElementRef;
@@ -88,11 +89,13 @@ export class HomePage implements OnInit {
     private shareService: shareService,
     private inAppBrowser: InAppBrowser,
     private keyboard: Keyboard,
-    private event: Events
+    private event: Events,
+    private platform: Platform
   ) {
   }
 
   ngOnInit() {
+    this.isIos = this.platform.is('ios');
     this.event.subscribe('tabChange', (index: number) => {
       this.getTools(index);
     });
@@ -359,15 +362,12 @@ export class HomePage implements OnInit {
 
   // 按每十万扣费计算
   segmentChanged(item: any) {
-    if(item.actived) return;
-    this.list.map(v => {
-      v.actived = false;
-    });
-    item.actived = true;
-    this.segment = item.value;
-    // tslint:disable-next-line:triple-equals
-    // debugger; 
-    // if (this.segment == item.value) { return; }
+    // if(item.actived) return;
+    // this.list.map(v => {
+    //   v.actived = false;
+    // });
+    // item.actived = true;
+    // this.segment = item.value;
     switch (item.value) {
       case 'lac':
         this.cards2[0][0].value = this.cards1[0][0].value;

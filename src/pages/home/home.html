@@ -9,20 +9,19 @@
   </ion-toolbar>
 </ion-header>
 
-<!-- <ion-segment [(ngModel)]="segment" class="mfix" [style.top]="isIos?'6.4rem':'44px'">
+<ion-segment [(ngModel)]="segment" class="mfix" [style.top]="isIos?'6.4rem':'44px'">
   <ion-segment-button value="{{item.value}}" (tap)="segmentChanged(item)" *ngFor="let item of list" class="segbtn">
     {{item.text}}
   </ion-segment-button>
-</ion-segment> -->
+</ion-segment>
 <ion-content>
-  <!-- [style.marginBottom]="overlay + 'px'" -->
-  <ion-fab class="mfab mseg" top>
+  <!-- <ion-fab class="mfab mseg" top>
     <button ion-fab *ngFor="let item of list" (tap)="segmentChanged(item)" [class.actived]="item.actived">
         {{item.text}}
     </button>
-  </ion-fab>
+  </ion-fab> -->
   <div class="layout" [class.outlac]="isLac" [class.show]="isShow" #layout>
-    <form action="javascript:return true;" (submit)="calculate()" class="mform">
+    <form action="javascript:return true;" (submit)="calculate()" class="mform" [style.marginTop]="isIos?'5.5rem':'3.6rem'">
       <ion-input padding clearInput="true" [ngModelOptions]="{standalone: true}" class="finput" placeholder="备注（选填）"
         type="text" [(ngModel)]="remark"></ion-input>
       <ion-list>
