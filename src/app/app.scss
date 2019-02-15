@@ -111,7 +111,16 @@ ion-app.ios [padding] {
   background: #eee;
   -webkit-overflow-scrolling: auto;
 }
-body{
+body {
 	-webkit-overflow-scrolling: touch;
-	overflow-y: scroll;
+  overflow-y: scroll;
+}
+.tabs-ios[tabsLayout=icon-hide] .tab-button, .tabs-ios .tab-button.has-title-only {
+  color: #8c8c8c;
+}
+.tabs-ios .tab-button:hover:not(.disable-hover), .tabs-ios .tab-button[aria-selected=true] {
+  color: #8c8c8c;
+}
+.tabs-ios .tab-button-icon {
+  min-width: 30px;
 }

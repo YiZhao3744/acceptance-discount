@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as moment from 'moment';
-import { NavController, AlertController, DateTime, Toast, Content, Platform } from 'ionic-angular';
+import { NavController, AlertController, DateTime, Toast, Content, Events } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Observable } from 'rxjs';
@@ -26,8 +26,8 @@ export class HomePage implements OnInit {
   ];
 
   list = [
-    { text: '按利率计算', value: 'rate' },
-    { text: '按每十万扣费计算', value: 'lac' }
+    { text: '按利率计算', value: 'rate',actived: true },
+    { text: '按每十万扣费计算', value: 'lac', actived: false }
   ]
 
   formlist = [];
@@ -66,13 +66,6 @@ export class HomePage implements OnInit {
   segment = 'rate';
   remark = null;
 
-  footerList = [
-    // { text:'收藏', value:1, icon: 'shoucang'},
-    { text: '清除', value: 2, icon: 'qingchu' },
-    { text: '复制', value: 3, icon: 'fuzhi' },
-    { text: '分享', value: 4, icon: 'fenxiang' }
-  ];
-
   holidayStart: string = '';
   holidayEnd: string = '';
   browserIns: InAppBrowserObject;
@@ -83,10 +76,10 @@ export class HomePage implements OnInit {
   _ytoast: Toast;
   _mtoast: Toast;
   isShow = false;
-  isIos = false;
 
   @ViewChild(Content) content: Content;
-
+  @ViewChild('layout') layout: ElementRef;
+  
   constructor(
     private navCtrl: NavController,
     private clipboard: Clipboard,
@@ -95,12 +88,14 @@ export class HomePage implements OnInit {
     private shareService: shareService,
     private inAppBrowser: InAppBrowser,
     private keyboard: Keyboard,
-    private plaform: Platform
+    private event: Events
   ) {
   }
 
   ngOnInit() {
-    this.isIos = this.plaform.is('ios');
+    this.event.subscribe('tabChange', (index: number) => {
+      this.getTools(index);
+    });
     this.formlist = this.formlist1;
     this.cards = this.cards1;
     this.activeBtn = this.btnlist[0];
@@ -364,6 +359,12 @@ export class HomePage implements OnInit {
 
   // 按每十万扣费计算
   segmentChanged(item: any) {
+    if(item.actived) return;
+    this.list.map(v => {
+      v.actived = false;
+    });
+    item.actived = true;
+    this.segment = item.value;
     // tslint:disable-next-line:triple-equals
     // debugger; 
     // if (this.segment == item.value) { return; }
@@ -395,12 +396,9 @@ export class HomePage implements OnInit {
     });
   }
 
-  getTools(item: any, btn) {
-    switch (item.value) {
-      case 1:
-
-        break;
-      case 2:
+  getTools(item: any) {
+    switch (item) {
+      case 0:
         // this.showConfirm();
         this.btnlist.map(v => {
           v.actived = false;
@@ -410,10 +408,10 @@ export class HomePage implements OnInit {
         this.clear();
         this.clearCard();
         break;
-      case 3:
+      case 1:
         this.doCopy();
         break;
-      case 4:
+      case 2:
         this.shareService.onShare();
         break;
     }

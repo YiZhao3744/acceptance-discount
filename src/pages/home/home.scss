@@ -1,5 +1,8 @@
    page-home {
-
+    .mform {
+      margin-top: 4.2rem;
+      padding-top: .5em;
+    }
      ion-segment {
        background: white;
 
@@ -34,7 +37,7 @@
      .mfix {
        position: fixed;
        z-index: 99;
-      //  top: 6.4rem;
+       //  top: 6.4rem;
        left: 0;
      }
 
@@ -70,6 +73,38 @@
              line-height: 28px;
            }
          }
+
+         .actived {
+           color: #ab253a !important;
+
+           &:after {
+             content: '';
+             width: 30%;
+             background: #ab253a;
+             height: 1px;
+             display: block;
+             position: absolute;
+             bottom: 0;
+             left: 50%;
+             transform: translateX(-50%);
+           }
+         }
+       }
+
+       .mseg {
+         height: 4.2rem;
+         padding-top: 0;
+         top: 0;
+         button {
+           width: 50%;
+           height: 100%;
+           .button-inner {
+              height: 4.2rem;
+              display: flex;
+              align-items: center;
+              font-size: 1.6rem;
+           }
+         }
        }
 
        .fab-ios.activated {
@@ -80,17 +115,16 @@
        .layout {
          background: #eee;
          min-height: 100%;
-         margin-bottom: 66px;
+        //  margin-bottom: 66px;
          overflow: hidden;
          overflow-y: auto;
          -webkit-overflow-scrolling: auto;
-         
+
          .finput {
-           margin: .5em 0;
+           margin-bottom: .5em;
            background: white;
            font-size: 15px;
            padding: 0 16px;
-           margin-top: calc(3.2rem + .7em);
          }
 
          ion-list {
@@ -271,12 +305,6 @@
            }
          }
        }
-
-       .outlac,
-       .show {
-         margin-bottom: 0;
-       }
-
 
        .days {
          padding: 0 16px;

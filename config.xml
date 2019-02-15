@@ -24,6 +24,7 @@
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="StatusBarStyle" value="lightcontent" />
     <preference name="AndroidLaunchMode" value="singleTask" />
+    <preference name="android-windowSoftInputMode" value="adjustPan" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />

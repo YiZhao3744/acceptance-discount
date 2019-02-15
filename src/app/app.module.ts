@@ -15,11 +15,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { shareService } from '../provoders/share.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
+import { TabsPage } from '../pages/tabs/tabs';
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    CounterPage
+    CounterPage,
+    TabsPage
   ],
   imports: [
     BrowserModule,
@@ -28,13 +30,15 @@ import { Keyboard } from '@ionic-native/keyboard';
     IonicModule.forRoot(MyApp, {
       mode: 'ios',
       iconMode: 'ios',
+      tabsHideOnSubPages: true
     })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
-    CounterPage
+    CounterPage,
+    TabsPage
   ],
   providers: [
     StatusBar,
