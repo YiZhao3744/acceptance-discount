@@ -15,12 +15,6 @@ export class shareService {
     ) { }
 
     onShare() {
-        const loading = this.loadingCtrl.create({
-            content: '保存截图中···',
-            cssClass: 'cus-toast',
-        });
-        const now = new Date().getTime();
-        loading.present();
         Observable.fromPromise(this.screenshot.URI(50))
             .pipe(
                 map((v: any) => {
@@ -30,24 +24,9 @@ export class shareService {
                     return Observable.fromPromise(this.screenshot.save('jpg', 50));
                 }))
             .subscribe(() => {
-                const then = new Date().getTime();
-                const diff = then - now;
-                if (diff <= 1500) {
-                    setTimeout(() => {
-                        loading.dismiss().then(() => {
-                            this.showActionSheet();
-                        });
-                    }, diff);
-                } else {
-                    loading.dismiss().then(() => {
-                        this.showActionSheet();
-                    });
-                }
+                this.showActionSheet();
             }, () => {
-                loading.dismiss().then(() => {
-                    const toast = this.showToast('截图保存失败');
-                    toast.present();
-                });
+                this.showToast('截图保存失败').present();;
             });
     }
 
