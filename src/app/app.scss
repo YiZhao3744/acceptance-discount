@@ -111,19 +111,30 @@ ion-app.ios [padding] {
   background: #eee;
   -webkit-overflow-scrolling: auto;
 }
+
 body {
-	-webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
 }
-.tabs-ios[tabsLayout=icon-hide] .tab-button, .tabs-ios .tab-button.has-title-only {
+
+.tabs-ios[tabsLayout=icon-hide] .tab-button,
+.tabs-ios .tab-button.has-title-only {
   color: #8c8c8c;
 }
-.tabs-ios .tab-button:hover:not(.disable-hover), .tabs-ios .tab-button[aria-selected=true] {
+
+.tabs-ios .tab-button:hover:not(.disable-hover),
+.tabs-ios .tab-button[aria-selected=true] {
   color: #8c8c8c;
 }
+
 .tabs-ios .tab-button-icon {
   min-width: 30px;
 }
+
 ion-header {
   height: 4.4rem !important;
+
+  ion-toolbar {
+    height: 100%;
+  }
 }
