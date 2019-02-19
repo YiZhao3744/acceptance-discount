@@ -1,7 +1,14 @@
    page-home {
+    
     .mform {
-      margin-top: 3.6rem;
+      margin-top: 5.6rem;
       padding-top: .5em;
+    }
+    .imax {
+      margin-top: 8rem;
+    }
+    .isandroid {
+      margin-top: 3.2rem;
     }
      ion-segment {
        background: white;
@@ -38,7 +45,7 @@
      .mfix {
        position: fixed;
        z-index: 99;
-        top: 4.4rem!important;
+       top: 4.4rem!important;
        left: 0;
      }
 
@@ -120,6 +127,7 @@
          overflow: hidden;
          overflow-y: auto;
          -webkit-overflow-scrolling: auto;
+         margin-top: 4.4rem;
 
          .finput {
            margin-bottom: .5em;

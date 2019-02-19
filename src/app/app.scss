@@ -110,6 +110,7 @@ ion-app.ios [padding] {
 .scroll-content {
   background: #eee;
   -webkit-overflow-scrolling: auto;
+  margin-top: 0!important;
 }
 
 body {

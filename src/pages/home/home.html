@@ -7,13 +7,14 @@
       <span class="iconfont icon-gongjuxiang"></span>
     </button> -->
   </ion-toolbar>
+  <ion-segment [(ngModel)]="segment" class="" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="{{item.value}}" tappable  *ngFor="let item of list" class="segbtn">
+      {{item.text}}
+    </ion-segment-button>
+  </ion-segment>
 </ion-header>
 <!-- [style.top]="isIos?'6.4rem':'44px'" -->
-<ion-segment [(ngModel)]="segment" class="mfix" >
-  <ion-segment-button value="{{item.value}}" (tap)="segmentChanged(item)" *ngFor="let item of list" class="segbtn">
-    {{item.text}}
-  </ion-segment-button>
-</ion-segment>
+
 <ion-content>
   <!-- <ion-fab class="mfab mseg" top>
     <button ion-fab *ngFor="let item of list" (tap)="segmentChanged(item)" [class.actived]="item.actived">
@@ -21,9 +22,9 @@
     </button>
   </ion-fab> -->
   <!-- [style.marginTop]="isIos?'5.5rem':'3.6rem'" -->
-  <div class="layout" [class.outlac]="isLac" [class.show]="isShow" #layout>
+  <div class="layout" [class.outlac]="isLac" #layout>
     <form action="javascript:return true;" 
-    (submit)="calculate()" class="mform"
+    (submit)="calculate()" class="mform" [class.imax]="isIosMax" [class.isandroid]="!isIos"
      >
       <ion-input padding clearInput="true" [ngModelOptions]="{standalone: true}" class="finput" placeholder="备注（选填）"
         type="text" [(ngModel)]="remark"></ion-input>

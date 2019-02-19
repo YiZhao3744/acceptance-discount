@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as moment from 'moment';
-import { NavController, AlertController, DateTime, Toast, Content, Events, Platform } from 'ionic-angular';
+import { NavController, AlertController, DateTime, Toast, Content, Events, Platform, Segment } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Observable } from 'rxjs';
@@ -75,8 +75,8 @@ export class HomePage implements OnInit {
   minDay = moment().add(-2, 'year').format('YYYY');
   _ytoast: Toast;
   _mtoast: Toast;
-  isShow = false;
   isIos = false;
+  isIosMax = false;
 
   @ViewChild(Content) content: Content;
   @ViewChild('layout') layout: ElementRef;
@@ -94,7 +94,19 @@ export class HomePage implements OnInit {
   ) {
   }
 
+  isMax() {
+    let isp = /iphone/gi.test(window.navigator.userAgent),
+        dpr = window.devicePixelRatio,
+        dpi = window.devicePixelRatio,
+        w   = window.screen.width,
+        h   = window.screen.height;
+    // let isIPhoneX = isp && dpr && dpi === 3 && w === 375 && h === 812;
+    // iPhone XS Max
+    return isp && dpr && dpi === 3 && w === 414 && h === 896;
+  }
+
   ngOnInit() {
+    this.isIosMax = this.isMax();
     this.isIos = this.platform.is('ios');
     this.event.subscribe('tabChange', (index: number) => {
       this.getTools(index);
@@ -103,11 +115,11 @@ export class HomePage implements OnInit {
     this.cards = this.cards1;
     this.activeBtn = this.btnlist[0];
     this.initDate();
-    this.keyboard.onKeyboardWillShow().subscribe(res => {
-      this.isShow = true;
+    this.keyboard.onKeyboardWillShow().subscribe((res) => {
+      this.event.publish('hideTabs');
     });
-    this.keyboard.onKeyboardHide().subscribe(res => {
-      this.isShow = false;
+    this.keyboard.onKeyboardWillHide().subscribe(res => {
+      this.event.publish('showTabs');
       setTimeout(() => {
         this.content.scrollTo(0, 0);
       }, 0);
@@ -308,7 +320,7 @@ export class HomePage implements OnInit {
     // if (this.keyboard.isVisible) {
     //   this.keyboard.hide();
     // }
-    this.getLac();
+    if(this.isLac) return this.getLac();
 
     // tslint:disable-next-line:triple-equals
     // 每十万贴息=100000*年利率/360/100*计息天数+每十万手续费
@@ -361,13 +373,7 @@ export class HomePage implements OnInit {
   }
 
   // 按每十万扣费计算
-  segmentChanged(item: any) {
-    // if(item.actived) return;
-    // this.list.map(v => {
-    //   v.actived = false;
-    // });
-    // item.actived = true;
-    // this.segment = item.value;
+  segmentChanged(item: Segment) {
     switch (item.value) {
       case 'lac':
         this.cards2[0][0].value = this.cards1[0][0].value;
