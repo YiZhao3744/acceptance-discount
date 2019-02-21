@@ -372,9 +372,21 @@ export class HomePage implements OnInit {
 
     // 贴现金额= 票面金额*10000 - 贴现利息
     // const m = this.formlist1[4].value || 0;
-    const e = this.formlist1[0].value * 10000 - this.cards[1][0].value;
+    const val = this.transform(String(this.cards[1][0].value));
+    const e = this.formlist1[0].value * 10000 - val;
     const f = e;
     this.cards[1][1].value = this.numFormat(parseFloat((Math.round(f * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
+  }
+
+  transform(val: string) {
+    let arr = '';
+    for (let i = 0; i < val.length; i++) {
+      console.log(val[i] !== ',')
+     if(val[i] !== ',') {
+       arr += val[i];
+     }
+    }
+    return Number(arr);
   }
 
   clearCard() {
