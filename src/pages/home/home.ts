@@ -77,6 +77,7 @@ export class HomePage implements OnInit {
   _mtoast: Toast;
   isIos = false;
   isIosMax = false;
+  isHuaweiP10 = false;
 
   @ViewChild(Content) content: Content;
   @ViewChild('layout') layout: ElementRef;
@@ -106,6 +107,7 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
+    this.isHuaweiP10 = this.platform['_isHuaweiP10'];
     this.isIosMax = this.isMax();
     this.isIos = this.platform.is('ios');
     this.event.subscribe('tabChange', (index: number) => {
@@ -281,10 +283,10 @@ export class HomePage implements OnInit {
       }
       const a = this.formlist2[0].value * 360 / this.cards[0][0].value;
       const b = a / 100000 * 100;
-      this.cards[0][1].value = parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
+      this.cards[0][1].value = this.numFormat(parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
 
       // 折合月利率 = 十万扣费*360/计息天数/100000*100/1.2
-      this.cards[1][0].value = parseFloat((Math.round(b / 1.2 * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
+      this.cards[1][0].value = this.numFormat(parseFloat((Math.round(b / 1.2 * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
     }
   }
 
@@ -315,6 +317,15 @@ export class HomePage implements OnInit {
     }
   }
 
+  numFormat(num: number) {
+    let res = num.toString().replace(/\d+/, n => { 
+         return n.replace(/(\d)(?=(\d{3})+$)/g, v => {
+            return v + ",";
+          });
+    })
+    return res;
+  }
+
   // 按利率计算
   calculate(item?: any) {
     // if (this.keyboard.isVisible) {
@@ -338,7 +349,7 @@ export class HomePage implements OnInit {
 
     // 每十万贴息
     // 100000*年利率/360/100*计息天数+手续费
-    this.cards[0][1].value = parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
+    this.cards[0][1].value = this.numFormat(parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
     // tslint:disable-next-line:triple-equals
     if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
       // this.clearCard();
@@ -346,7 +357,7 @@ export class HomePage implements OnInit {
     }
     // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
     const d = b * this.formlist1[0].value / 10;
-    this.cards[1][0].value = parseFloat((Math.round(d * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
+    this.cards[1][0].value = this.numFormat(parseFloat((Math.round(d * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
 
     if (this.formlist1[0].value >= 1000000) {
       this.shareService.showToast('最多输入六位票面金额').present();
@@ -363,7 +374,7 @@ export class HomePage implements OnInit {
     // const m = this.formlist1[4].value || 0;
     const e = this.formlist1[0].value * 10000 - this.cards[1][0].value;
     const f = e;
-    this.cards[1][1].value = parseFloat((Math.round(f * Math.pow(10, 2)) / Math.pow(10, 2)).toString());
+    this.cards[1][1].value = this.numFormat(parseFloat((Math.round(f * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
   }
 
   clearCard() {
