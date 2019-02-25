@@ -77,6 +77,7 @@ export class HomePage implements OnInit {
   _mtoast: Toast;
   isIos = false;
   isIosMax = false;
+  isIhoneX = false;
   isHuaweiP10 = false;
 
   @ViewChild(Content) content: Content;
@@ -101,15 +102,15 @@ export class HomePage implements OnInit {
         dpi = window.devicePixelRatio,
         w   = window.screen.width,
         h   = window.screen.height;
-    // let isIPhoneX = isp && dpr && dpi === 3 && w === 375 && h === 812;
+    this.isIhoneX = isp && dpr && dpi === 3 && w === 375 && h === 812;
     // iPhone XS Max
-    return isp && dpr && dpi === 3 && w === 414 && h === 896;
+    this.isIosMax =  isp && dpr && dpi === 3 && w === 414 && h === 896;
+    this.isIos = this.platform.is('ios');
+    this.isHuaweiP10 = this.platform['_isHuaweiP10'];
   }
 
   ngOnInit() {
-    this.isHuaweiP10 = this.platform['_isHuaweiP10'];
-    this.isIosMax = this.isMax();
-    this.isIos = this.platform.is('ios');
+    this.isMax();
     this.event.subscribe('tabChange', (index: number) => {
       this.getTools(index);
     });
