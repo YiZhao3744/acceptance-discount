@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content>
-  <div class="layout">
+  <div class="layout" [class.ihoneX]="isIhoneX" [class.imax]="isIosMax" [class.iPhoneXR]="isIPhoneXR">
     <div class="text-box" #textBox>
       <p>{{preValue}}</p>
       <p>{{operation}}</p>

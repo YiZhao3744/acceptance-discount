@@ -8,6 +8,7 @@ import { HttpService } from '../../provoders/http.service';
 import { shareService } from '../../provoders/share.service';
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
+import { Helper } from '../../provoders/helper';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
@@ -26,7 +27,7 @@ export class HomePage implements OnInit {
   ];
 
   list = [
-    { text: '按利率计算', value: 'rate',actived: true },
+    { text: '按利率计算', value: 'rate', actived: true },
     { text: '按每十万扣费计算', value: 'lac', actived: false }
   ]
 
@@ -79,10 +80,11 @@ export class HomePage implements OnInit {
   isIosMax = false;
   isIhoneX = false;
   isHuaweiP10 = false;
+  isIPhoneXR = false;
 
   @ViewChild(Content) content: Content;
   @ViewChild('layout') layout: ElementRef;
-  
+
   constructor(
     private navCtrl: NavController,
     private clipboard: Clipboard,
@@ -98,13 +100,18 @@ export class HomePage implements OnInit {
 
   isMax() {
     let isp = /iphone/gi.test(window.navigator.userAgent),
-        dpr = window.devicePixelRatio,
-        dpi = window.devicePixelRatio,
-        w   = window.screen.width,
-        h   = window.screen.height;
+      dpr = window.devicePixelRatio,
+      dpi = window.devicePixelRatio,
+      w = window.screen.width,
+      h = window.screen.height;
+
     this.isIhoneX = isp && dpr && dpi === 3 && w === 375 && h === 812;
+
     // iPhone XS Max
-    this.isIosMax =  isp && dpr && dpi === 3 && w === 414 && h === 896;
+    this.isIosMax = isp && dpr && dpi === 3 && w === 414 && h === 896;
+
+    // iPhone XR
+    this.isIPhoneXR = isp && dpr && dpi === 2 && w === 414 && h === 896;
     this.isIos = this.platform.is('ios');
     this.isHuaweiP10 = this.platform['_isHuaweiP10'];
   }
@@ -284,10 +291,10 @@ export class HomePage implements OnInit {
       }
       const a = this.formlist2[0].value * 360 / this.cards[0][0].value;
       const b = a / 100000 * 100;
-      this.cards[0][1].value = this.numFormat(parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
+      this.cards[0][1].value = Helper.numFormat(parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
 
       // 折合月利率 = 十万扣费*360/计息天数/100000*100/1.2
-      this.cards[1][0].value = this.numFormat(parseFloat((Math.round(b / 1.2 * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
+      this.cards[1][0].value = Helper.numFormat(parseFloat((Math.round(b / 1.2 * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
     }
   }
 
@@ -318,21 +325,12 @@ export class HomePage implements OnInit {
     }
   }
 
-  numFormat(num: number) {
-    let res = num.toString().replace(/\d+/, n => { 
-         return n.replace(/(\d)(?=(\d{3})+$)/g, v => {
-            return v + ",";
-          });
-    })
-    return res;
-  }
-
   // 按利率计算
   calculate(item?: any) {
     // if (this.keyboard.isVisible) {
     //   this.keyboard.hide();
     // }
-    if(this.isLac) return this.getLac();
+    if (this.isLac) return this.getLac();
 
     // tslint:disable-next-line:triple-equals
     // 每十万贴息=100000*年利率/360/100*计息天数+每十万手续费
@@ -347,10 +345,11 @@ export class HomePage implements OnInit {
     const a = (100000 * c) / 360 / 100;
     const ss = this.formlist1[3].value || 0;
     const b = a * this.cards[0][0].value + Number(ss);
+    if (isNaN(b)) return;
 
     // 每十万贴息
     // 100000*年利率/360/100*计息天数+手续费
-    this.cards[0][1].value = this.numFormat(parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
+    this.cards[0][1].value = Helper.numFormat(parseFloat((Math.round(b * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
     // tslint:disable-next-line:triple-equals
     if (this.formlist1[0].value == '' || this.formlist1[0].value == null) {
       // this.clearCard();
@@ -358,7 +357,7 @@ export class HomePage implements OnInit {
     }
     // 贴现利息 =（100000*年利率/360/100*计息天数+手续费）*票面金额/10
     const d = b * this.formlist1[0].value / 10;
-    this.cards[1][0].value = this.numFormat(parseFloat((Math.round(d * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
+    this.cards[1][0].value = Helper.numFormat(parseFloat((Math.round(d * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
 
     if (this.formlist1[0].value >= 1000000) {
       this.shareService.showToast('最多输入六位票面金额').present();
@@ -373,21 +372,10 @@ export class HomePage implements OnInit {
 
     // 贴现金额= 票面金额*10000 - 贴现利息
     // const m = this.formlist1[4].value || 0;
-    const val = this.transform(String(this.cards[1][0].value));
+    const val = Helper.transform(String(this.cards[1][0].value));
     const e = this.formlist1[0].value * 10000 - val;
     const f = e;
-    this.cards[1][1].value = this.numFormat(parseFloat((Math.round(f * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
-  }
-
-  transform(val: string) {
-    let arr = '';
-    for (let i = 0; i < val.length; i++) {
-      console.log(val[i] !== ',')
-     if(val[i] !== ',') {
-       arr += val[i];
-     }
-    }
-    return Number(arr);
+    this.cards[1][1].value = Helper.numFormat(parseFloat((Math.round(f * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
   }
 
   clearCard() {

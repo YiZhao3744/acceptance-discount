@@ -21,7 +21,7 @@
     </button>
   </ion-fab> -->
   <div class="layout" [class.outlac]="isLac" #layout>
-    <form action="javascript:return true;" [class.huawei]="isHuaweiP10" [class.iphonex]="isIhoneX"
+    <form action="javascript:return true;" [class.huawei]="isHuaweiP10" [class.iphonex]="isIhoneX" [class.iPhoneXR]="isIPhoneXR"
     (submit)="calculate()" class="mform" [class.imax]="isIosMax" [class.isandroid]="!isIos"
      >
       <ion-input padding clearInput="true" [ngModelOptions]="{standalone: true}" class="finput" placeholder="备注（选填）"
