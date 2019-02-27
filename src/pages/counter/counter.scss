@@ -90,13 +90,23 @@ app-counter {
         }
     }
     .iPhoneXR {
-        margin-top: 11rem;
+        margin-top: 10rem;
         .text-box {
             height: calc((100% - 12rem) * 0.5);
         }
         .calculator {
             height: calc((100% - 12rem) * 0.48);
             bottom: 11rem;
+        }
+    }
+    .imax {
+        margin-top: 10rem;
+        .text-box {
+            height: calc((100% - 14rem) * 0.5);
+        }
+        .calculator {
+            height: calc((100% - 10rem) * 0.48);
+            bottom: 12rem;
         }
     }
 }
