@@ -85,8 +85,9 @@ export class CounterPage implements OnInit {
     }
     if (!this.operation) {
       if (!isOpts) {
-        if (this.canAdd(Helper.transform(this.preValue).toString(), item)) {
-          this.preValue = Helper.numFormat(Helper.transform(this.preValue) + item);
+        const val = this.preValue ? this.preValue.indexOf('.') > -1 ? this.preValue : Helper.numFormat(Helper.transform(this.preValue)) : this.preValue;
+        if (this.canAdd(val, item)) {
+          this.preValue = val + item;
         }
       } else {
         if (item && item !== '＝' && item !== 'C') { this.operation = item; }

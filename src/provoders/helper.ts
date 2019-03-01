@@ -2,7 +2,6 @@ export class Helper {
     public static  transform(val: string) {
         let arr = '';
         for (let i = 0; i < val.length; i++) {
-          console.log(val[i] !== ',')
          if(val[i] !== ',') {
            arr += val[i];
          }
