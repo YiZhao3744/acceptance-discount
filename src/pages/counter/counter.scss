@@ -1,112 +1,145 @@
 app-counter {
-    .scroll-content {
-        overflow: hidden;
+  .scroll-content {
+    overflow: hidden;
+  }
+
+  .layout {
+    height: 100%;
+    position: relative;
+
+    .text-box {
+      position: absolute;
+      background: #e2dfdf;
+      width: calc(100% - .6em);
+      margin: .3em;
+      border-radius: 5px;
+      box-shadow: 1px 1px 0 #d0caca;
+      overflow-y: scroll;
+      height: 33%;
+
+      p {
+        margin: 0;
+        padding: 0 .5em;
+        color: black;
+        border: 1px solid #f1efef;
+        height: calc(100% / 3) !important;
+        font-size: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        &:last-of-type {
+          border-bottom: none;
+        }
+      }
     }
-    .layout {
+
+    .calculator {
+      position: absolute;
+      bottom: 0.3em;
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      height: 65%;
+
+      .mgrid {
+        width: 100%;
         height: 100%;
-        position: relative;
-        margin-top: 5rem;
-        .text-box {
-            font-size: 2rem;
-            position: absolute;
-            background: #e2dfdf;
-            width: calc(100% - .6em);
-            height: calc((100% - 5rem) * 0.5);
-            margin: .3em;
-            border-radius: 5px;
-            box-shadow: 1px 1px 0 #d0caca;
-            overflow-y: scroll;
-            p {
-                margin: 0;
-                padding: 1em;
-                text-align: right;
-                color: black;
-                border: 1px solid white;
-                height: 25%;
-                &:last-of-type {
-                    border-bottom: none;
-                }
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 .3em;
+        height: 20%;
+        &:nth-child(1) {
+            button {
+                width: calc(50% - .3em);
+                background: #797676;
+                color: white;
             }
         }
-        .calculator {
-            position: absolute;
-            bottom: 5rem;
-            width: 100%;
-            height: calc((100% - 5rem) * 0.48);
-            display: flex;
-            align-items: flex-end;
-            .mgrid {
-                width: 100%;
-                height: 100%;
+        &:last-of-type {
+          padding-bottom: .3em;
+          button {
+            &:nth-child(3) {
+              background: #ab253a;
+              color: white;
             }
-            .row {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 .3em;
-                height: 20%;
-                &:last-of-type {
-                    padding-bottom: .3em;
-                    button {
-                        &:last-of-type {
-                            background: #ab253a;
-                        }
-                    }
-                }
-        
-                button {
-                    width: 24%;
-                    font-size: 2rem;
-                    margin-top: .3em;
-                    min-height: 30px;
-                    border-radius: 3px;
-                    color: white;
-                    min-height: 40px;
-                    background-color: #a09c9c;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    user-select: none;
-                    height: 90%;
-                    &:focus {
-                       outline: none;
-                    }
-                }
-                .active {
-                    background: #aba0a0;
-                    box-shadow: 2px 2px 0 #eee;
-                }
-            }
+          }
         }
+
+        button {
+          width: 22%;
+          padding: 0 !important;
+          font-size: 2.5rem;
+          margin-top: .3em;
+          border-radius: 6px;
+          color: black;
+          min-height: 40px;
+          background-color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+          height: 90%;
+          text-shadow: 0px 1px 2px #545353;
+          box-shadow: -2px 3px 5px #888888;
+          &:focus {
+            outline: none;
+          }
+
+          &:last-of-type {
+            background: #797676;
+            color: white;
+          }
+        }
+
+        .active {
+             background: #adabab;
+             box-shadow: 2px 2px 0 #eee;
+             color: white;
+        }
+      }
     }
-    .ihoneX {
-        margin-top: 9rem;
-        .text-box {
-            height: calc((100% - 10rem) * 0.5);
-        }
-        .calculator {
-            height: calc((100% - 10rem) * 0.48);
-            bottom: 9rem;
-        }
-    }
-    .iPhoneXR {
-        margin-top: 10rem;
-        .text-box {
-            height: calc((100% - 12rem) * 0.5);
-        }
-        .calculator {
-            height: calc((100% - 12rem) * 0.48);
-            bottom: 11rem;
-        }
-    }
-    .imax {
-        margin-top: 10rem;
-        .text-box {
-            height: calc((100% - 14rem) * 0.5);
-        }
-        .calculator {
-            height: calc((100% - 10rem) * 0.48);
-            bottom: 12rem;
-        }
-    }
+  }
+
+//   .ihoneX {
+//     margin-top: 9rem;
+
+//     .text-box {
+//       height: calc((100% - 10rem) * 0.5);
+//     }
+
+//     .calculator {
+//       height: calc((100% - 10rem) * 0.48);
+//       bottom: 9rem;
+//     }
+//   }
+
+//   .iPhoneXR {
+//     margin-top: 10rem;
+
+//     .text-box {
+//       height: calc((100% - 12rem) * 0.5);
+//     }
+
+//     .calculator {
+//       height: calc((100% - 12rem) * 0.48);
+//       bottom: 11rem;
+//     }
+//   }
+
+//   .imax {
+//     margin-top: 10rem;
+
+//     .text-box {
+//       height: calc((100% - 14rem) * 0.5);
+//     }
+
+//     .calculator {
+//       height: calc((100% - 10rem) * 0.48);
+//       bottom: 12rem;
+//     }
+//   }
 }

@@ -51,11 +51,11 @@ export class CounterPage implements OnInit {
 
   createList() {
     this.list = [
-      { items: ['C'], opt: [], isBack: true },
-      { items: ['1', '2', '3'], opts: ['×'] },
-      { items: ['4', '5', '6'], opts: ['÷'] },
+      { items: ['AC'], opt: [], isBack: true },
+      { items: ['1', '2', '3'], opts: ['÷'] },
+      { items: ['4', '5', '6'], opts: ['×'] },
       { items: ['7', '8', '9'], opts: ['-'] },
-      { items: ['0', '.'], opts: ['+', '＝'] },
+      { items: ['0', '.'], opts: ['＝', '+'] },
     ];
   }
 
@@ -71,7 +71,8 @@ export class CounterPage implements OnInit {
   }
 
   onStart(item: any, e: any, data: any) {
-    if (item === 'C') {
+    if(!item && !this.preValue) return;
+    if (item === 'AC') {
       this.clear();
       return;
     }
@@ -103,11 +104,17 @@ export class CounterPage implements OnInit {
     }
     if (data.isBack) {
       if (this.operation) {
+        if(this.currentValue == '') {
+          this.operation = '';
+          return;
+        }
         this.currentValue = this.currentValue.substr(0, this.currentValue.length - 1);
+       
       } else {
         this.preValue = Helper.numFormat(Number(Helper.transform(this.preValue).toString().substr(0, Helper.transform(this.preValue).toString().length - 1)));
       }
     }
+    if(this.preValue == '0') this.preValue = '';
     this.className = e.target.className;
     if (!data.isBack) {
       e.target.className += ' active';
