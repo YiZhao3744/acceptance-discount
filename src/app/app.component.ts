@@ -9,17 +9,17 @@ import { TabsPage } from '../pages/tabs/tabs';
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = TabsPage;
+  rootPage: any = TabsPage;
 
   constructor(platform: Platform, statusBar: StatusBar, render: Renderer2,
     splashScreen: SplashScreen, keyboard: Keyboard) {
     platform.ready().then(() => {
       const isHuaweiP10 = window.navigator.userAgent.includes('VTR-AL00');
       const docel = document.documentElement || document.body;
-      if(isHuaweiP10) { 
+      if (isHuaweiP10) {
         render.setStyle(docel, 'fontSize', '50%');
       }
-    platform['_isHuaweiP10'] = isHuaweiP10;
+      platform['_isHuaweiP10'] = isHuaweiP10;
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleBlackTranslucent();

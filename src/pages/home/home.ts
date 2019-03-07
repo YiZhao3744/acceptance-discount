@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
 import * as moment from 'moment';
 import { NavController, AlertController, DateTime, Toast, Content, Events, Platform, Segment } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
@@ -85,10 +85,20 @@ export class HomePage implements OnInit {
   @ViewChild(Content) content: Content;
   @ViewChild('layout') layout: ElementRef;
 
-  @ViewChild('segElem')segElem: ElementRef;
+  @ViewChild('segElem') segElem: ElementRef;
+  @ViewChild('mitem') mitem: ElementRef;
+  @ViewChild('cardsElem') cardsElem: ElementRef;
+
+  
   layerHeight = '';
   layerMarginTop = '';
   boxHeight = '';
+  contentHeight = 0;
+  contentElem: HTMLDivElement;
+  mitemHeight: string = '';
+  mitemlist = [];
+  cardsHieght: string = '';
+
 
   constructor(
     private navCtrl: NavController,
@@ -99,7 +109,8 @@ export class HomePage implements OnInit {
     private inAppBrowser: InAppBrowser,
     private keyboard: Keyboard,
     private event: Events,
-    private platform: Platform
+    private platform: Platform,
+    private renderer: Renderer
   ) {
   }
 
@@ -130,10 +141,12 @@ export class HomePage implements OnInit {
     this.cards = this.cards1;
     this.activeBtn = this.btnlist[0];
     this.initDate();
-    this.keyboard.onKeyboardWillShow().subscribe((res) => {
+    
+    this.keyboard.onKeyboardWillShow().subscribe(() => {
       this.event.publish('hideTabs');
+      this.setHeight();
     });
-    this.keyboard.onKeyboardWillHide().subscribe(res => {
+    this.keyboard.onKeyboardWillHide().subscribe(() => {
       this.event.publish('showTabs');
       setTimeout(() => {
         this.content.scrollTo(0, 0);
@@ -141,12 +154,27 @@ export class HomePage implements OnInit {
     });
   }
 
+  setHeight() {
+    if (!this.mitemlist.length) this.mitemlist = Array.from(document.querySelectorAll('.mitem'));
+    // if (!this.contentHeight) this.contentHeight = this.content.scrollHeight;
+    // if (!this.contentElem) this.contentElem = document.querySelector('.scroll-content');
+    this.mitemlist.map(v => {
+      this.renderer.setElementStyle(v, 'min-height', this.mitemHeight);
+    });
+    this.renderer.setElementStyle(this.cardsElem.nativeElement, 'height', this.cardsHieght);
+  }
+
   ionViewWillEnter() {
-    console.log(this.segElem);
     const h = this.segElem.nativeElement.clientHeight;
     this.layerMarginTop = `${h + 10}px`;
     this.layerHeight = `calc( 100% - ${h + 10}px )`;
     this.boxHeight = `calc( ( 100% - ${h + 10}px ) / 2 )`;
+  }
+
+  ionViewDidEnter() {
+    this.mitemHeight = `${this.mitem.nativeElement.clientHeight}px !important`;
+    this.cardsHieght = `${this.cardsElem.nativeElement.clientHeight}px !important`;
+    this.setHeight();
   }
 
   onClickBtn(item) {
@@ -453,7 +481,7 @@ export class HomePage implements OnInit {
     if (this.segment === 'rate') {
       str =
         // `      备注: ${this.remark || '--'}
-                `票据金额: ${this.formlist[0].value || '--'}万元
+        `      票据金额: ${this.formlist[0].value || '--'}万元
       年利率: ${this.formlist[1].value || '--'}%
       月利率: ${this.formlist[2].value || '--'}‰
       手续费: ${this.formlist[3].value || '--'}元/十万
@@ -467,7 +495,7 @@ export class HomePage implements OnInit {
     } else {
       str =
         // `      备注: ${this.remark || '--'}
-                `十万扣费: ${this.formlist[0].value || '--'}元
+        `      十万扣费: ${this.formlist[0].value || '--'}元
       折合年利率: ${this.cards[0][1].value || '--'}%
       折合月利率: ${this.cards[1][0].value || '--'}‰
       贴现日期: ${this.dateStart}

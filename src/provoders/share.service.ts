@@ -85,31 +85,31 @@ export class shareService {
         });
     }
 
-    private shareToTimeLine() {
-        let wechat = (<any>window).Wechat;
-        wechat.isInstalled((installed: any) => {
-            if (!installed) {
-                this.showToast('您没有安装微信！').present();
-                return;
-            }
-        }, (reason: any) => {
-            this.showToast('分享失败: ' + reason).present();
-        });
-        wechat.share({
-            message: {
-                title: '承兑汇票计算器',
-                description: '一款专业，高效，便捷的票据交易工具，在票据交易过程中可轻松的计算出票据交易信息，为广大中小企业在承兑贴现过程中提供便捷的计算服务！',
-                thumb: this.url,
-                media: {
-                    type: wechat.Type.IMAGE,
-                    image: this.url
-                }
-            },
-            scene: wechat.Scene.TIMELINE
-        }, () => {
-            this.showToast('分享成功').present();
-        }, (reason: any) => {
-            this.showToast('分享失败: ' + reason).present();
-        });
-    }
+    // private shareToTimeLine() {
+    //     let wechat = (<any>window).Wechat;
+    //     wechat.isInstalled((installed: any) => {
+    //         if (!installed) {
+    //             this.showToast('您没有安装微信！').present();
+    //             return;
+    //         }
+    //     }, (reason: any) => {
+    //         this.showToast('分享失败: ' + reason).present();
+    //     });
+    //     wechat.share({
+    //         message: {
+    //             title: '承兑汇票计算器',
+    //             description: '一款专业，高效，便捷的票据交易工具，在票据交易过程中可轻松的计算出票据交易信息，为广大中小企业在承兑贴现过程中提供便捷的计算服务！',
+    //             thumb: this.url,
+    //             media: {
+    //                 type: wechat.Type.IMAGE,
+    //                 image: this.url
+    //             }
+    //         },
+    //         scene: wechat.Scene.TIMELINE
+    //     }, () => {
+    //         this.showToast('分享成功').present();
+    //     }, (reason: any) => {
+    //         this.showToast('分享失败: ' + reason).present();
+    //     });
+    // }
 }
