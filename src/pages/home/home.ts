@@ -168,7 +168,7 @@ export class HomePage implements OnInit {
     const h = this.segElem.nativeElement.clientHeight;
     this.layerMarginTop = `${h + 10}px`;
     this.layerHeight = `calc( 100% - ${h + 10}px )`;
-    this.boxHeight = `calc( ( 100% - ${h + 10}px ) / 2 )`;
+    this.boxHeight = `calc(( 100% - ${h + 10}px ) / 2)`;
   }
 
   ionViewDidEnter() {
