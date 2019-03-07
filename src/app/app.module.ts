@@ -16,6 +16,7 @@ import { shareService } from '../provoders/share.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
 import { TabsPage } from '../pages/tabs/tabs';
+import { DatePicker } from '@ionic-native/date-picker';
 @NgModule({
   declarations: [
     MyApp,
@@ -49,6 +50,7 @@ import { TabsPage } from '../pages/tabs/tabs';
     shareService,
     InAppBrowser,
     Keyboard,
+    DatePicker,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

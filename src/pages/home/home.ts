@@ -9,6 +9,9 @@ import { shareService } from '../../provoders/share.service';
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Helper } from '../../provoders/helper';
+import { DatePicker } from '@ionic-native/date-picker';
+
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
@@ -72,8 +75,8 @@ export class HomePage implements OnInit {
   browserIns: InAppBrowserObject;
   dayCache;
   activeBtn;
-  maxDay = moment().add(1, 'year').format('YYYY');
-  minDay = moment().add(-2, 'year').format('YYYY');
+  maxDay = moment().add(1, 'year').format('YYYY-MM-DD');
+  minDay = moment().add(-2, 'year').format('YYYY-MM-DD');
   _ytoast: Toast;
   _mtoast: Toast;
   isIos = false;
@@ -110,7 +113,8 @@ export class HomePage implements OnInit {
     private keyboard: Keyboard,
     private event: Events,
     private platform: Platform,
-    private renderer: Renderer
+    private renderer: Renderer,
+    private datePicker: DatePicker
   ) {
   }
 
@@ -178,19 +182,34 @@ export class HomePage implements OnInit {
   }
 
   onClickBtn(item) {
-    this.activeBtn = item;
-    this.btnlist.map(v => {
-      v.actived = false;
-    });
-    item.actived = true;
-    if (this.activeBtn.value === 2) {
-      this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
-    } else if (this.activeBtn.value === 3) {
-      this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
-    } else {
-      this.dateEnd = moment(this.dateStart).add(1, 'year').format('YYYY-MM-DD');
-    }
-    this.getHoliday();
+    // this.activeBtn = item;
+    // this.btnlist.map(v => {
+    //   v.actived = false;
+    // });
+    // item.actived = true;
+    // if (this.activeBtn.value === 2) {
+    //   this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
+    // } else if (this.activeBtn.value === 3) {
+    //   this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
+    // } else {
+    //   this.dateEnd = moment(this.dateStart).add(1, 'year').format('YYYY-MM-DD');
+    // }
+    // this.getHoliday();
+
+    const minDay = this.platform.is('ios') ? new Date(this.minDay) : (new Date(this.minDay)).valueOf();
+    const maxDay = this.platform.is('ios') ? new Date(this.maxDay) : (new Date(this.maxDay)).valueOf();
+
+    this.datePicker.show({
+      date: new Date(),
+      mode: 'date',
+      locale: 'zh-CN',
+      minDate: minDay,
+      maxDate: maxDay,
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
+    }).then(
+      date => alert('Got date: '+ date),
+      err => alert('Error occurred while getting date: '+ err)
+    );
   }
 
   initDate() {
