@@ -21,6 +21,9 @@ import { DatePicker } from '@ionic-native/date-picker';
 import { AppVersion } from '@ionic-native/app-version';
 import { Network } from '@ionic-native/network';
 import { File } from '@ionic-native/file';
+import { VersionService } from '../provoders/version.service';
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { FileOpener } from '@ionic-native/file-opener';
 
 @NgModule({
   declarations: [
@@ -59,6 +62,9 @@ import { File } from '@ionic-native/file';
     AppVersion,
     Network,
     File,
+    VersionService,
+    FileTransfer,
+    FileOpener,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
