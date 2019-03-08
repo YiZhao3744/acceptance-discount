@@ -5,6 +5,7 @@ export const BASEURL = 'http://www.saihujinrong.com/calculator/';
 export const REQUEST_TIMEOUT = 15000;
 
 /*-------app版本服务地址-----------*/
+// https://www.saihujinrong.com/about/cal.apk?time='+new Date().getTime()
 export const APP_VERSION_URL = 'http://update.saing.cn/app/version.json';
 export const APP_DOWNLOAD_URL = 'http://update.saing.cn/app/智慧益民.apk';
 

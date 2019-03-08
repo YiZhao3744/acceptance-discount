@@ -341,7 +341,8 @@ export class HomePage implements OnInit {
   }
 
   onInputChange(item) {
-    item.value = item.value.replace(/[^[0-9]+([.]{1}[0-9]+){0,1}$/);
+    alert(item.value);
+    // item.value = item.value.replace(/[^[0-9]+([.]{1}[0-9]+){0,1}$/);
     if (item.isRate) {
       if (item.value === '') {
         this.formlist1[2].value = null;
