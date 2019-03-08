@@ -14,7 +14,7 @@
   </ion-segment>
 </ion-header>
 
-<ion-content>
+<ion-content no-bounce>
   <div class="layout" [class.outlac]="isLac" [style.marginTop]="layerMarginTop" #layout [style.height]="layerHeight">
     <form action="javascript:return true;" [class.huawei]="isHuaweiP10" [class.iphonex]="isIhoneX" [class.iPhoneXR]="isIPhoneXR"
       (submit)="calculate()" class="mform" [class.imax]="isIosMax" [class.isandroid]="!isIos">
@@ -24,7 +24,7 @@
         <div *ngFor="let item of formlist" class="mitem">
           <span class="label" color="primary" [class.lac]="isLac">{{item.label}}</span>
           <div class="detail">
-            <ion-input padding-left clearInput="true" pattern="\d*" type="number" [ngModelOptions]="{standalone: true}" (ionBlur)="calculate(item)"
+            <ion-input padding-left clearInput="true" pattern="^(?:[1-9][0-9]*|0)(?:/.[0-9]+)?$" type="number" [ngModelOptions]="{standalone: true}" (ionBlur)="calculate(item)"
               placeholder="{{item.holder}}" [(ngModel)]="item.value" (input)="getRate(item)" (ionChange)="onInputChange(item)"></ion-input>
             <span class="unit">{{item.unit}}</span>
           </div>
@@ -50,7 +50,7 @@
           <div class="detail">
             <div class="left">
               <ion-icon ios="ios-remove-circle-outline" md="md-remove-circle-outline" tappable (click)="onIncres()"></ion-icon>
-              <ion-input [ngModelOptions]="{standalone: true}" type="number" pattern="\d*" [(ngModel)]="addDay" (ionChange)="setDays(false)"
+              <ion-input [ngModelOptions]="{standalone: true}" type="number" pattern="^(?:[1-9][0-9]*|0)(?:/.[0-9]+)?$" [(ngModel)]="addDay" (ionChange)="setDays(false)"
                 [class.red]="addDay"></ion-input>
               <ion-icon md="md-add-circle-outline" ios="ios-add-circle-outline" (tap)="onAdd()"></ion-icon>
             </div>

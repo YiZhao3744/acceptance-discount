@@ -5,7 +5,7 @@ import { CounterPage } from '../counter/counter';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Observable } from 'rxjs';
 import { HttpService } from '../../provoders/http.service';
-import { shareService } from '../../provoders/share.service';
+import { NativeService } from '../../provoders/native.service';
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Helper } from '../../provoders/helper';
@@ -108,7 +108,7 @@ export class HomePage implements OnInit {
     private clipboard: Clipboard,
     private alert: AlertController,
     private service: HttpService,
-    private shareService: shareService,
+    private nativeService: NativeService,
     private inAppBrowser: InAppBrowser,
     private keyboard: Keyboard,
     private event: Events,
@@ -182,29 +182,39 @@ export class HomePage implements OnInit {
   }
 
   onClickBtn(item) {
-    // this.activeBtn = item;
-    // this.btnlist.map(v => {
-    //   v.actived = false;
-    // });
-    // item.actived = true;
-    // if (this.activeBtn.value === 2) {
-    //   this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
-    // } else if (this.activeBtn.value === 3) {
-    //   this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
-    // } else {
-    //   this.dateEnd = moment(this.dateStart).add(1, 'year').format('YYYY-MM-DD');
-    // }
-    // this.getHoliday();
+    this.activeBtn = item;
+    this.btnlist.map(v => {
+      v.actived = false;
+    });
+    item.actived = true;
+    if (this.activeBtn.value === 2) {
+      this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
+    } else if (this.activeBtn.value === 3) {
+      this.dateEnd = moment(this.dateStart).add(.5, 'year').format('YYYY-MM-DD');
+    } else {
+      this.dateEnd = moment(this.dateStart).add(1, 'year').format('YYYY-MM-DD');
+    }
+    this.getHoliday();
+    this.showDatePicker();
+  }
 
-    const minDay = this.platform.is('ios') ? new Date(this.minDay) : (new Date(this.minDay)).valueOf();
-    const maxDay = this.platform.is('ios') ? new Date(this.maxDay) : (new Date(this.maxDay)).valueOf();
-
+  showDatePicker() {
+    const minDay = this.platform.is('ios') ? new Date(this.minDay).valueOf() : (new Date(this.minDay)).valueOf();
+    const maxDay = this.platform.is('ios') ? new Date(moment().add(1, 'year').format('YYYY')) : (new Date(this.maxDay)).valueOf();
     this.datePicker.show({
       date: new Date(),
       mode: 'date',
       locale: 'zh-CN',
       minDate: minDay,
       maxDate: maxDay,
+      doneButtonLabel: '确定',
+      cancelButtonLabel: '取消',
+      okText: '确定',
+      cancelText: '取消',
+      popoverArrowDirection: 'up',
+      cancelButtonColor: '#222',
+      doneButtonColor: '#488aff',
+      titleText: '', // android
       androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
     }).then(
       date => alert('Got date: '+ date),
@@ -309,7 +319,7 @@ export class HomePage implements OnInit {
 
   onPickDate() {
     if (new Date(this.dateEnd).getTime() < new Date(this.dateStart).getTime()) {
-      this.shareService.showToast('到期日期不能小于贴现日期').present();
+      this.nativeService.showToast('到期日期不能小于贴现日期').present();
       this.initDate();
       return;
     }
@@ -331,6 +341,7 @@ export class HomePage implements OnInit {
   }
 
   onInputChange(item) {
+    item.value = item.value.replace(/[^[0-9]+([.]{1}[0-9]+){0,1}$/);
     if (item.isRate) {
       if (item.value === '') {
         this.formlist1[2].value = null;
@@ -365,7 +376,7 @@ export class HomePage implements OnInit {
         let val = Math.round((Number(item.value) / 1.2) * Math.pow(10, 4)) / Math.pow(10, 4);
         this.formlist1[2].value = parseFloat(val.toString());
         if ((Number(item.value) < 0 || Number(item.value) > 100) && !this._ytoast) {
-          this._ytoast = this.shareService.showToast('年利率应在0~100之间');
+          this._ytoast = this.nativeService.showToast('年利率应在0~100之间');
           this._ytoast.present();
           this._ytoast.onDidDismiss(() => {
             this._ytoast = null;
@@ -375,7 +386,7 @@ export class HomePage implements OnInit {
         let val = Math.round((item.value * 1.2) * Math.pow(10, 4)) / Math.pow(10, 4);
         this.formlist1[1].value = parseFloat(val.toString());
         if ((Number(item.value) < 0 || Number(item.value) > 83.33) && !this._mtoast) {
-          this._mtoast = this.shareService.showToast('月利率应在0~83.33之间');
+          this._mtoast = this.nativeService.showToast('月利率应在0~83.33之间');
           this._mtoast.present();
           this._mtoast.onDidDismiss(() => {
             this._mtoast = null;
@@ -420,7 +431,7 @@ export class HomePage implements OnInit {
     this.cards[1][0].value = Helper.numFormat(parseFloat((Math.round(d * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
 
     if (this.formlist1[0].value >= 1000000) {
-      this.shareService.showToast('最多输入六位票面金额').present();
+      this.nativeService.showToast('最多输入六位票面金额').present();
       this.formlist1[0].value = null;
       return;
     }
@@ -490,7 +501,7 @@ export class HomePage implements OnInit {
         this.doCopy();
         break;
       case 2:
-        this.shareService.onShare();
+        this.nativeService.onShare();
         break;
     }
   }
@@ -523,7 +534,7 @@ export class HomePage implements OnInit {
       计息天数: ${this.cards[0][0].value}天`;
     }
     this.clipboard.copy(str).then(() => {
-      this.shareService.showToast('复制成功！').present();
+      this.nativeService.showToast('复制成功！').present();
     });
   }
 
