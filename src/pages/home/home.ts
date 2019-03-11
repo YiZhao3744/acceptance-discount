@@ -195,29 +195,29 @@ export class HomePage implements OnInit {
     this.getHoliday();
   }
 
-  showDatePicker() {
-    const minDay = this.platform.is('ios') ? new Date(this.minDay).valueOf() : (new Date(this.minDay)).valueOf();
-    const maxDay = this.platform.is('ios') ? new Date(moment().add(1, 'year').format('YYYY')) : (new Date(this.maxDay)).valueOf();
-    this.datePicker.show({
-      date: new Date(),
-      mode: 'date',
-      locale: 'zh-CN',
-      minDate: minDay,
-      maxDate: maxDay,
-      doneButtonLabel: '确定',
-      cancelButtonLabel: '取消',
-      okText: '确定',
-      cancelText: '取消',
-      popoverArrowDirection: 'up',
-      cancelButtonColor: '#222',
-      doneButtonColor: '#488aff',
-      titleText: '', // android
-      androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
-    }).then(
-      date => alert('Got date: '+ date),
-      err => alert('Error occurred while getting date: '+ err)
-    );
-  }
+  // showDatePicker() {
+  //   const minDay = this.platform.is('ios') ? new Date(this.minDay).valueOf() : (new Date(this.minDay)).valueOf();
+  //   const maxDay = this.platform.is('ios') ? new Date(moment().add(1, 'year').format('YYYY')) : (new Date(this.maxDay)).valueOf();
+  //   this.datePicker.show({
+  //     date: new Date(),
+  //     mode: 'date',
+  //     locale: 'zh-CN',
+  //     minDate: minDay,
+  //     maxDate: maxDay,
+  //     doneButtonLabel: '确定',
+  //     cancelButtonLabel: '取消',
+  //     okText: '确定',
+  //     cancelText: '取消',
+  //     popoverArrowDirection: 'up',
+  //     cancelButtonColor: '#222',
+  //     doneButtonColor: '#488aff',
+  //     titleText: '', // android
+  //     androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
+  //   }).then(
+  //     date => alert('Got date: '+ date),
+  //     err => alert('Error occurred while getting date: '+ err)
+  //   );
+  // }
 
   initDate() {
     this.dateStart = moment(new Date()).format('YYYY-MM-DD');
