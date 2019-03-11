@@ -7,20 +7,15 @@
       <span class="iconfont icon-gongjuxiang"></span>
     </button> -->
   </ion-toolbar>
-  <ion-segment [(ngModel)]="segment" class="" (ionChange)="segmentChanged($event)">
-    <ion-segment-button value="{{item.value}}" tappable  *ngFor="let item of list" class="segbtn">
+  <ion-segment #segElem [(ngModel)]="segment" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="{{item.value}}" tappable *ngFor="let item of list" class="segbtn">
       {{item.text}}
     </ion-segment-button>
   </ion-segment>
 </ion-header>
 
-<ion-content>
-  <!-- <ion-fab class="mfab mseg" top>
-    <button ion-fab *ngFor="let item of list" (tap)="segmentChanged(item)" [class.actived]="item.actived">
-        {{item.text}}
-    </button>
-  </ion-fab> -->
-  <div class="layout" [class.outlac]="isLac" #layout>
+<ion-content no-bounce>
+  <div class="layout" [class.outlac]="isLac" [style.marginTop]="layerMarginTop" #layout [style.height]="layerHeight">
     <form action="javascript:return true;" [class.huawei]="isHuaweiP10" [class.iphonex]="isIhoneX" [class.iPhoneXR]="isIPhoneXR"
     (submit)="calculate()" class="mform" [class.imax]="isIosMax" [class.isandroid]="!isIos"
      >
@@ -37,32 +32,35 @@
           <ion-label color="primary" [class.lac]="isLac">贴现日</ion-label>
           <ion-datetime #startTime displayFormat="YYYY-MM-DD" min="{{minDay}}" max="{{maxDay}}" cancelText="取消"
             doneText="确定" [(ngModel)]="dateStart" (ionChange)="onPickDate()" [ngModelOptions]="{standalone: true}"></ion-datetime>
-          <span [class.red]="isStartRed" item-end><i>{{holidayStart}}</i> {{startDay}}</span>
-        </ion-item>
-        <ion-item>
-          <ion-label color="primary" [class.lac]="isLac">到期日</ion-label>
-          <ion-datetime #endTime displayFormat="YYYY-MM-DD" cancelText="取消" doneText="确定" min="{{minDay}}" max="{{maxDay}}"
-            (ionChange)="onPickDate()" [(ngModel)]="dateEnd" [ngModelOptions]="{standalone: true}"></ion-datetime>
-          <span [class.red]="isEndRed" class="weektext" item-end><i>{{holidayEnd}}</i> {{endDay}}</span>
-        </ion-item>
-      </ion-list>
-    </form>
-    <div class="cards">
-      <div class="days">
-        <span class="lab">调整天数</span>
-        <div class="right">
-          <div class="left">
-            <ion-icon ios="ios-remove-circle-outline" md="md-remove-circle-outline" tappable (click)="onIncres()"></ion-icon>
-            <ion-input [ngModelOptions]="{standalone: true}" type="number" [(ngModel)]="addDay" (ionChange)="setDays(false)"
-              [class.red]="addDay"></ion-input>
-            <ion-icon md="md-add-circle-outline" ios="ios-add-circle-outline" (tap)="onAdd()"></ion-icon>
+          <span [class.red]="isStartRed" class="unit"><i>{{holidayStart}}</i> {{startDay}}</span>
           </div>
-          <div class="btns">
-            <button ion-button class="mbtn" [class.actived]="item.actived" small *ngFor="let item of btnlist" value="item.value"
-              (tap)="onClickBtn(item)">{{item.text}}</button>
+        </div>
+        <div class="mitem" [style.height]="mitemHeight">
+          <span class="label" color="primary" [class.lac]="isLac">到期日</span>
+            <div class="detail">
+              <ion-datetime #endTime displayFormat="YYYY-MM-DD" cancelText="取消" doneText="确定" min="{{minDay}}" max="{{maxDay}}"
+              (ionChange)="onPickDate()" [(ngModel)]="dateEnd" [ngModelOptions]="{standalone: true}"></ion-datetime>
+            <span [class.red]="isEndRed" class="unit" class="weektext"><i>{{holidayEnd}}</i> {{endDay}}</span>
+            </div>
+        </div>
+        <div class="mitem" [style.height]="mitemHeight">
+          <span class="label">调整天数</span>
+          <div class="detail">
+            <div class="left">
+              <ion-icon ios="ios-remove-circle-outline" md="md-remove-circle-outline" tappable (click)="onIncres()"></ion-icon>
+              <ion-input [ngModelOptions]="{standalone: true}" type="number" pattern="^(?:[1-9][0-9]*|0)(?:/.[0-9]+)?$" [(ngModel)]="addDay" (ionChange)="setDays(false)"
+                [class.red]="addDay"></ion-input>
+              <ion-icon md="md-add-circle-outline" ios="ios-add-circle-outline" (tap)="onAdd()"></ion-icon>
+            </div>
+            <div class="btns">
+              <button ion-button class="mbtn" [class.actived]="item.actived" small *ngFor="let item of btnlist" value="item.value"
+                (tap)="onClickBtn(item)">{{item.text}}</button>
+            </div>
           </div>
         </div>
       </div>
+    </form>
+    <div class="cards" [class.lacc]="segment === 'lac'" #cardsElem [style.height]="cardsHieght">
       <div class="mgrid">
         <div class="mrow" *ngFor="let items of cards">
           <div class="mcol" *ngFor="let item of items">
@@ -78,10 +76,4 @@
       </div>
     </div>
   </div>
-  <!-- <ion-fab class="mfab" bottom>
-    <button ion-fab *ngFor="let item of footerList" (tap)="getTools(item, btn)">
-      <span class="{{'fabtn iconfont icon-' + item.icon}}"></span>
-      <span class="fabtn">{{item.text}}</span>
-    </button>
-  </ion-fab> -->
 </ion-content>

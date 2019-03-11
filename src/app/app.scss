@@ -107,13 +107,7 @@ ion-app.ios [padding] {
 
 .scroll-content {
   background: #eee;
-  -webkit-overflow-scrolling: auto;
-  margin-top: 0!important;
-}
-
-body {
-  -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+  // overflow: hidden;
 }
 
 .tabs-ios[tabsLayout=icon-hide] .tab-button,
@@ -136,4 +130,11 @@ ion-header {
   ion-toolbar {
     height: 100%;
   }
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
 }

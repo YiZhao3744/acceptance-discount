@@ -12,10 +12,19 @@ import { Screenshot } from '@ionic-native/screenshot';
 import { Clipboard } from '@ionic-native/clipboard';
 import { HttpService } from '../provoders/http.service';
 import { HttpClientModule } from '@angular/common/http';
-import { shareService } from '../provoders/share.service';
+import { NativeService } from '../provoders/native.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
 import { TabsPage } from '../pages/tabs/tabs';
+
+import { DatePicker } from '@ionic-native/date-picker';
+import { AppVersion } from '@ionic-native/app-version';
+import { Network } from '@ionic-native/network';
+import { File } from '@ionic-native/file';
+import { VersionService } from '../provoders/version.service';
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { FileOpener } from '@ionic-native/file-opener';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -46,9 +55,16 @@ import { TabsPage } from '../pages/tabs/tabs';
     Screenshot,
     Clipboard,
     HttpService,
-    shareService,
+    NativeService,
     InAppBrowser,
     Keyboard,
+    DatePicker,
+    AppVersion,
+    Network,
+    File,
+    VersionService,
+    FileTransfer,
+    FileOpener,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

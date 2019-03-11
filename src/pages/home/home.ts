@@ -1,14 +1,16 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
 import * as moment from 'moment';
 import { NavController, AlertController, DateTime, Toast, Content, Events, Platform, Segment } from 'ionic-angular';
 import { CounterPage } from '../counter/counter';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Observable } from 'rxjs';
 import { HttpService } from '../../provoders/http.service';
-import { shareService } from '../../provoders/share.service';
+import { NativeService } from '../../provoders/native.service';
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Helper } from '../../provoders/helper';
+
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
@@ -72,8 +74,8 @@ export class HomePage implements OnInit {
   browserIns: InAppBrowserObject;
   dayCache;
   activeBtn;
-  maxDay = moment().add(1, 'year').format('YYYY');
-  minDay = moment().add(-2, 'year').format('YYYY');
+  maxDay = moment().add(1, 'year').format('YYYY-MM-DD');
+  minDay = moment().add(-2, 'year').format('YYYY-MM-DD');
   _ytoast: Toast;
   _mtoast: Toast;
   isIos = false;
@@ -85,16 +87,32 @@ export class HomePage implements OnInit {
   @ViewChild(Content) content: Content;
   @ViewChild('layout') layout: ElementRef;
 
+  @ViewChild('segElem') segElem: ElementRef;
+  @ViewChild('mitem') mitem: ElementRef;
+  @ViewChild('cardsElem') cardsElem: ElementRef;
+
+  
+  layerHeight = '';
+  layerMarginTop = '';
+  boxHeight = '';
+  contentHeight = 0;
+  contentElem: HTMLDivElement;
+  mitemHeight: string = '';
+  mitemlist = [];
+  cardsHieght: string = '';
+
+
   constructor(
     private navCtrl: NavController,
     private clipboard: Clipboard,
     private alert: AlertController,
     private service: HttpService,
-    private shareService: shareService,
+    private nativeService: NativeService,
     private inAppBrowser: InAppBrowser,
     private keyboard: Keyboard,
     private event: Events,
-    private platform: Platform
+    private platform: Platform,
+    private renderer: Renderer,
   ) {
   }
 
@@ -125,15 +143,40 @@ export class HomePage implements OnInit {
     this.cards = this.cards1;
     this.activeBtn = this.btnlist[0];
     this.initDate();
-    this.keyboard.onKeyboardWillShow().subscribe((res) => {
+    
+    this.keyboard.onKeyboardWillShow().subscribe(() => {
       this.event.publish('hideTabs');
+      this.setHeight();
     });
-    this.keyboard.onKeyboardWillHide().subscribe(res => {
+    this.keyboard.onKeyboardWillHide().subscribe(() => {
       this.event.publish('showTabs');
       setTimeout(() => {
         this.content.scrollTo(0, 0);
       }, 0);
     });
+  }
+
+  setHeight() {
+    if (!this.mitemlist.length) this.mitemlist = Array.from(document.querySelectorAll('.mitem'));
+    // if (!this.contentHeight) this.contentHeight = this.content.scrollHeight;
+    // if (!this.contentElem) this.contentElem = document.querySelector('.scroll-content');
+    this.mitemlist.map(v => {
+      this.renderer.setElementStyle(v, 'min-height', this.mitemHeight);
+    });
+    this.renderer.setElementStyle(this.cardsElem.nativeElement, 'height', this.cardsHieght);
+  }
+
+  ionViewWillEnter() {
+    const h = this.segElem.nativeElement.clientHeight;
+    this.layerMarginTop = `${h + 10}px`;
+    this.layerHeight = `calc( 100% - ${h + 10}px )`;
+    this.boxHeight = `calc(( 100% - ${h + 10}px ) / 2)`;
+  }
+
+  ionViewDidEnter() {
+    this.mitemHeight = `${this.mitem.nativeElement.clientHeight}px !important`;
+    this.cardsHieght = `${this.cardsElem.nativeElement.clientHeight}px !important`;
+    this.setHeight();
   }
 
   onClickBtn(item) {
@@ -150,6 +193,30 @@ export class HomePage implements OnInit {
       this.dateEnd = moment(this.dateStart).add(1, 'year').format('YYYY-MM-DD');
     }
     this.getHoliday();
+  }
+
+  showDatePicker() {
+    const minDay = this.platform.is('ios') ? new Date(this.minDay).valueOf() : (new Date(this.minDay)).valueOf();
+    const maxDay = this.platform.is('ios') ? new Date(moment().add(1, 'year').format('YYYY')) : (new Date(this.maxDay)).valueOf();
+    this.datePicker.show({
+      date: new Date(),
+      mode: 'date',
+      locale: 'zh-CN',
+      minDate: minDay,
+      maxDate: maxDay,
+      doneButtonLabel: '确定',
+      cancelButtonLabel: '取消',
+      okText: '确定',
+      cancelText: '取消',
+      popoverArrowDirection: 'up',
+      cancelButtonColor: '#222',
+      doneButtonColor: '#488aff',
+      titleText: '', // android
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
+    }).then(
+      date => alert('Got date: '+ date),
+      err => alert('Error occurred while getting date: '+ err)
+    );
   }
 
   initDate() {
@@ -249,7 +316,7 @@ export class HomePage implements OnInit {
 
   onPickDate() {
     if (new Date(this.dateEnd).getTime() < new Date(this.dateStart).getTime()) {
-      this.shareService.showToast('到期日期不能小于贴现日期').present();
+      this.nativeService.showToast('到期日期不能小于贴现日期').present();
       this.initDate();
       return;
     }
@@ -271,6 +338,8 @@ export class HomePage implements OnInit {
   }
 
   onInputChange(item) {
+    alert(item.value);
+    // item.value = item.value.replace(/[^[0-9]+([.]{1}[0-9]+){0,1}$/);
     if (item.isRate) {
       if (item.value === '') {
         this.formlist1[2].value = null;
@@ -305,7 +374,7 @@ export class HomePage implements OnInit {
         let val = Math.round((Number(item.value) / 1.2) * Math.pow(10, 4)) / Math.pow(10, 4);
         this.formlist1[2].value = parseFloat(val.toString());
         if ((Number(item.value) < 0 || Number(item.value) > 100) && !this._ytoast) {
-          this._ytoast = this.shareService.showToast('年利率应在0~100之间');
+          this._ytoast = this.nativeService.showToast('年利率应在0~100之间');
           this._ytoast.present();
           this._ytoast.onDidDismiss(() => {
             this._ytoast = null;
@@ -315,7 +384,7 @@ export class HomePage implements OnInit {
         let val = Math.round((item.value * 1.2) * Math.pow(10, 4)) / Math.pow(10, 4);
         this.formlist1[1].value = parseFloat(val.toString());
         if ((Number(item.value) < 0 || Number(item.value) > 83.33) && !this._mtoast) {
-          this._mtoast = this.shareService.showToast('月利率应在0~83.33之间');
+          this._mtoast = this.nativeService.showToast('月利率应在0~83.33之间');
           this._mtoast.present();
           this._mtoast.onDidDismiss(() => {
             this._mtoast = null;
@@ -360,7 +429,7 @@ export class HomePage implements OnInit {
     this.cards[1][0].value = Helper.numFormat(parseFloat((Math.round(d * Math.pow(10, 2)) / Math.pow(10, 2)).toString()));
 
     if (this.formlist1[0].value >= 1000000) {
-      this.shareService.showToast('最多输入六位票面金额').present();
+      this.nativeService.showToast('最多输入六位票面金额').present();
       this.formlist1[0].value = null;
       return;
     }
@@ -430,7 +499,7 @@ export class HomePage implements OnInit {
         this.doCopy();
         break;
       case 2:
-        this.shareService.onShare();
+        this.nativeService.onShare();
         break;
     }
   }
@@ -463,7 +532,7 @@ export class HomePage implements OnInit {
       计息天数: ${this.cards[0][0].value}天`;
     }
     this.clipboard.copy(str).then(() => {
-      this.shareService.showToast('复制成功！').present();
+      this.nativeService.showToast('复制成功！').present();
     });
   }
 
