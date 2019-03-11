@@ -28,7 +28,7 @@ export class HomePage implements OnInit {
 
   list = [
     { text: '按利率计算', value: 'rate', actived: true },
-    { text: '按每十万扣费计算', value: 'lac', actived: false }
+    { text: '按每十万计算', value: 'lac', actived: false }
   ]
 
   formlist = [];
@@ -439,8 +439,8 @@ export class HomePage implements OnInit {
     let str: string;
     if (this.segment === 'rate') {
       str =
-        `      备注: ${this.remark || '--'}
-      票据金额: ${this.formlist[0].value || '--'}万元
+        // `      备注: ${this.remark || '--'}
+        `      票据金额: ${this.formlist[0].value || '--'}万元
       年利率: ${this.formlist[1].value || '--'}%
       月利率: ${this.formlist[2].value || '--'}‰
       手续费: ${this.formlist[3].value || '--'}元/十万
@@ -453,8 +453,8 @@ export class HomePage implements OnInit {
       贴现金额: ${this.cards[1][1].value || '--'}元`
     } else {
       str =
-        `      备注: ${this.remark || '--'}
-      十万扣费: ${this.formlist[0].value || '--'}元
+        // `      备注: ${this.remark || '--'}
+        `      十万扣费: ${this.formlist[0].value || '--'}元
       折合年利率: ${this.cards[0][1].value || '--'}%
       折合月利率: ${this.cards[1][0].value || '--'}‰
       贴现日期: ${this.dateStart}

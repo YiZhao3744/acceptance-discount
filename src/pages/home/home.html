@@ -24,8 +24,8 @@
     <form action="javascript:return true;" [class.huawei]="isHuaweiP10" [class.iphonex]="isIhoneX" [class.iPhoneXR]="isIPhoneXR"
     (submit)="calculate()" class="mform" [class.imax]="isIosMax" [class.isandroid]="!isIos"
      >
-      <ion-input padding clearInput="true" [ngModelOptions]="{standalone: true}" class="finput" placeholder="备注（选填）"
-        type="text" [(ngModel)]="remark"></ion-input>
+      <!-- <ion-input padding clearInput="true" [ngModelOptions]="{standalone: true}" class="finput" placeholder="备注（选填）"
+        type="text" [(ngModel)]="remark"></ion-input> -->
       <ion-list>
         <ion-item *ngFor="let item of formlist">
           <ion-label color="primary" [class.lac]="isLac">{{item.label}}</ion-label>

@@ -15,16 +15,17 @@ export class shareService {
     ) { }
 
     onShare() {
-        Observable.fromPromise(this.screenshot.URI(50))
+        Observable.fromPromise(this.screenshot.URI(100))
             .pipe(
                 map((v: any) => {
                     this.url = v.uri || v.URI;
                 }),
                 mergeMap(() => {
-                    return Observable.fromPromise(this.screenshot.save('jpg', 50));
+                    return Observable.fromPromise(this.screenshot.save('jpg', 100));
                 }))
             .subscribe(() => {
-                this.showActionSheet();
+                // this.showActionSheet();
+                this.shareToWechat();
             }, () => {
                 this.showToast('截图保存失败').present();;
             });
@@ -39,11 +40,11 @@ export class shareService {
                     cssClass: 'iconfont icon-wechat',
                     handler: () => this.shareToWechat()
                 },
-                {
-                    text: '分享到朋友圈',
-                    cssClass: 'iconfont icon-wechat_timeline',
-                    handler: () => this.shareToTimeLine()
-                }
+                // {
+                //     text: '分享到朋友圈',
+                //     cssClass: 'iconfont icon-wechat_timeline',
+                //     handler: () => this.shareToTimeLine()
+                // }
             ],
         });
         actionSheet.present();
@@ -71,7 +72,7 @@ export class shareService {
             },
             scene: wechat.Scene.SESSION
         }, () => {
-            this.showToast('分享成功').present();
+            // this.showToast('分享成功').present();
         }, (reason: any) => {
             this.showToast('分享失败：' + reason).present();
         });
@@ -80,7 +81,7 @@ export class shareService {
     showToast(msg = '') {
         return this.toast.create({
             message: msg,
-            duration: 2000,
+            duration: 500,
             cssClass: 'cus-toast',
             position: 'middle',
         });

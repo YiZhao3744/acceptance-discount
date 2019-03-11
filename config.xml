@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.safefinance.moneycalculator" version="1.4.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.safefinance.moneycalculator" version="1.4.8" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>承兑汇票计算器</name>
     <description>承兑汇票计算器是一款专业，高效，便捷的票据交易工具，在票据交易过程中可轻松的计算出票据交易信息，为广大中小企业在承兑贴现过程中提供便捷的计算服务！</description>
     <author email="hi@ionicframework" href="http://safefinance.com/">safefinance</author>
@@ -96,6 +96,6 @@
     <plugin name="cordova-clipboard" spec="~1.2.1" />
     <plugin name="cordova-plugin-inappbrowser" spec="~3.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
-    <engine name="android" spec="^7.1.4" />
     <engine name="ios" spec="^4.5.5" />
+    <engine name="android" spec="^7.1.4" />
 </widget>
